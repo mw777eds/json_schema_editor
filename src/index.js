@@ -112,7 +112,12 @@ function addOrEditNode(isAdd) {
     const enumValues = document.getElementById('enum').value;
     const isRequired = document.getElementById('required').checked;
 
-    let newNode = { description, type };
+    let newNode = { 
+        description, 
+        type,
+        properties: currentNode.properties || {},
+        required: currentNode.required || []
+    };
     if (enumValues) {
         newNode.enum = enumValues.split(',').map(v => v.trim());
     }
