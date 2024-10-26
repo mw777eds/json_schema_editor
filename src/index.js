@@ -106,12 +106,15 @@ function selectNode(key, value, parent) {
 }
 
 function addOrEditNode(isAdd) {
+    console.log("Starting addOrEditNode");
     const newKey = document.getElementById('title').value;
+    console.log("New key:", newKey);
     const description = document.getElementById('description').value;
     const type = document.getElementById('type').value;
     const enumValues = document.getElementById('enum').value;
     const isRequired = document.getElementById('required').checked;
 
+    console.log("Current node before edit:", JSON.stringify(currentNode, null, 2));
     let newNode = { 
         description, 
         type,
@@ -143,7 +146,9 @@ function addOrEditNode(isAdd) {
         currentObj = currentObj.properties[pathParts[i]];
     }
 
+    console.log("New node structure:", JSON.stringify(newNode, null, 2));
     if (!isAdd && selectedNode) {
+        console.log("Editing existing node:", selectedNode.key);
         // Remove the old node from the correct parent
         if (parentNode && parentNode.properties) {
             delete parentNode.properties[selectedNode.key];
@@ -156,10 +161,12 @@ function addOrEditNode(isAdd) {
 
     // Ensure parentNode is correctly set
     if (!parentNode) {
+        console.log("Parent node not set, using current object");
         parentNode = currentObj;
     }
 
     // Add the new node
+    console.log("Parent node before adding new node:", JSON.stringify(parentNode, null, 2));
     if (!parentNode.properties) {
         parentNode.properties = {};
     }
@@ -177,7 +184,9 @@ function addOrEditNode(isAdd) {
         }
     }
 
+    console.log("Parent node after adding new node:", JSON.stringify(parentNode, null, 2));
     updateTreeView();
+    console.log("Finished addOrEditNode");
     validateSchema();
     resetForm();
 }
