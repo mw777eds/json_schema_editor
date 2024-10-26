@@ -36,6 +36,7 @@ function restoreExpandedNodes() {
         const nodeElement = document.querySelector(`[data-key="${key}"]`);
         if (nodeElement) {
             nodeElement.classList.add('expanded');
+        }
     });
 }
 
