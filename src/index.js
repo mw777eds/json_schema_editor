@@ -147,7 +147,7 @@ function addOrEditNode(isAdd) {
             currentObj.properties = {};
         }
         if (!currentObj.properties[pathParts[i]]) {
-            currentObj.properties[pathParts[i]] = { type: 'object', properties: {} };
+            currentObj.properties[pathParts[i]] = { type: 'object', properties: {}, additionalProperties: false };
         }
         currentObj = currentObj.properties[pathParts[i]];
     }
