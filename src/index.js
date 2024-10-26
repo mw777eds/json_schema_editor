@@ -126,10 +126,10 @@ function addOrEditNode(isAdd) {
     }
 
     if (type === 'object') {
-        newNode.properties = {};
-        newNode.required = [];
+        newNode.properties = currentNode.properties ? { ...currentNode.properties } : {};
+        newNode.required = currentNode.required ? [...currentNode.required] : [];
     } else if (type === 'array') {
-        newNode.items = { type: 'string' };
+        newNode.items = currentNode.items ? { ...currentNode.items } : { type: 'string' };
     }
 
     let currentObj = schema;
