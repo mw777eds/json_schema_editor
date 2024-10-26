@@ -42,4 +42,96 @@ button {
   border: 1px solid #0091CE;
   background-color: #0091CE;
   color: #fff;
+}body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+.top-section {
+    display: flex;
+    height: 33vh;
+    margin-bottom: 20px;
+}
+#tree-view {
+    width: 300px;
+    border-right: 1px solid #ccc;
+    padding: 10px;
+    overflow-y: auto;
+}
+#editor {
+    flex-grow: 1;
+    padding: 10px;
+    overflow-y: auto;
+}
+#preview {
+    height: 67vh;
+    border-top: 1px solid #ccc;
+    padding: 10px;
+    overflow-y: auto;
+}
+.tree-node {
+    margin-left: 20px;
+    cursor: pointer;
+    user-select: none;
+}
+.tree-node::before {
+    content: '▶';
+    display: inline-block;
+    margin-right: 5px;
+    transition: transform 0.3s;
+}
+.tree-node.expanded::before {
+    transform: rotate(90deg);
+}
+.tree-node.no-children::before {
+    content: '';
+}
+.tree-node-content {
+    display: inline-block;
+}
+.tree-node-children {
+    display: none;
+    margin-left: 20px;
+}
+.tree-node.expanded > .tree-node-children {
+    display: block;
+}
+.error {
+    color: red;
+}
+button {
+    margin: 5px;
+}
+.json-key { color: #881391; }
+.json-string { color: #0B7500; }
+.json-number { color: #1A01CC; }
+.json-boolean { color: #FF0000; }
+.json-null { color: #808080; }
+.json-mark { color: #000000; }
+#schema-form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+#schema-form div {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2px;
+}
+#schema-form label {
+    width: 100px;
+    text-align: right;
+    margin-right: 10px;
+}
+#schema-form input[type="text"],
+#schema-form select {
+    width: 120%;
+}
+#schema-form #enum {
+    width: 120%;
+    height: 30px;
+    margin-bottom: 10px;
 }
