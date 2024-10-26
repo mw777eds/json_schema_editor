@@ -2,12 +2,9 @@ const rootTitle = "parameters";
 const rootDescription = "parameters for the current tool";
 
 let schema = {
-    "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://example.com/schema.json",
-    "title": rootTitle,
-    "description": rootDescription,
     "type": "object",
     "properties": {},
+    "required": [],
     "additionalProperties": false
 }
 
