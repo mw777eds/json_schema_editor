@@ -283,7 +283,11 @@ document.getElementById('copy-btn').onclick = async () => {
     const schemaString = JSON.stringify(schema);
     try {
         await navigator.clipboard.writeText(schemaString);
-        alert('JSON copied to clipboard!');
+        const copyFeedback = document.getElementById('copy-feedback');
+        copyFeedback.style.display = 'inline';
+        setTimeout(() => {
+            copyFeedback.style.display = 'none';
+        }, 2000);
     } catch (err) {
         alert('Failed to copy JSON: ' + err);
     }
