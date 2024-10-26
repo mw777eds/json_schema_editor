@@ -216,7 +216,7 @@ function resetForm() {
 function validateSchema() {
     const feedback = document.getElementById('validation-feedback');
     try {
-        JSON.parse(JSON.stringify(schema));
+        JSON.parse(safeStringify(schema));
         feedback.textContent = 'Schema is valid JSON.';
         feedback.classList.remove('error');
     } catch (error) {
@@ -311,5 +311,18 @@ document.getElementById('toggle-schema-options').onclick = () => {
     const schemaOptions = document.getElementById('schema-options');
     schemaOptions.style.display = schemaOptions.style.display === 'none' ? 'block' : 'none';
 };
+
+function safeStringify(obj) {
+    const seen = new WeakSet();
+    return JSON.stringify(obj, (key, value) => {
+        if (typeof value === "object" && value !== null) {
+            if (seen.has(value)) {
+                return; // Remove cyclic reference
+            }
+            seen.add(value);
+        }
+        return value;
+    });
+}
 
 updateTreeView();
