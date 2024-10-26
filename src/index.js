@@ -311,6 +311,8 @@ function applySchemaFromString(pastedSchema) {
             applyFeedback.style.display = 'inline';
             setTimeout(() => {
                 applyFeedback.style.display = 'none';
+                const schemaOptions = document.getElementById('schema-options');
+                schemaOptions.style.display = 'none';
             }, 2000);
             setTimeout(() => {
                 feedback.style.display = 'none';
