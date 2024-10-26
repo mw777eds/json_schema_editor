@@ -8,6 +8,11 @@ let schema = {
     "description": rootDescription,
     "type": "object",
     "properties": {}
+}
+
+document.getElementById('apply-pasted-schema').onclick = () => {
+    const pastedSchema = document.getElementById('paste-schema').value;
+    applySchemaFromString(pastedSchema);
 };
 let currentNode = schema;
 let selectedNode = null;
@@ -288,8 +293,7 @@ document.getElementById('schema-id').onchange = (e) => {
     updatePreview();
 };
 
-document.getElementById('apply-pasted-schema').onclick = () => {
-    const pastedSchema = document.getElementById('paste-schema').value;
+function applySchemaFromString(pastedSchema) {
     const feedback = document.getElementById('paste-feedback');
     try {
         const parsedSchema = JSON.parse(pastedSchema);
