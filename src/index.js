@@ -114,10 +114,13 @@ function addOrEditNode(isAdd) {
 
     let newNode = { 
         description, 
-        type,
-        properties: currentNode.properties ? { ...currentNode.properties } : {},
-        required: currentNode.required ? [...currentNode.required] : []
+        type
     };
+
+    if (type === 'object') {
+        newNode.properties = currentNode.properties ? { ...currentNode.properties } : {};
+        newNode.required = currentNode.required ? [...currentNode.required] : [];
+    }
     if (enumValues) {
         newNode.enum = enumValues.split(',').map(v => v.trim());
     }
