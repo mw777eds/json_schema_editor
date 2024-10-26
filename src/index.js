@@ -292,6 +292,7 @@ document.getElementById('apply-pasted-schema').onclick = () => {
             updateTreeView();
             feedback.textContent = 'Schema successfully applied.';
             feedback.classList.remove('error');
+            document.getElementById('paste-schema').value = '';
         } else {
             throw new Error('Invalid JSON schema structure');
         }
