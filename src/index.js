@@ -226,7 +226,7 @@ function validateSchema() {
 }
 
 document.getElementById('save-btn').onclick = () => {
-    const schemaString = JSON.stringify(schema);
+    const schemaString = safeStringify(schema);
     if (typeof window.FileMaker !== 'undefined') {
         window.FileMaker.PerformScript('SaveJSONSchema', schemaString);
     } else {
@@ -236,7 +236,7 @@ document.getElementById('save-btn').onclick = () => {
 
 function updatePreview() {
     const previewElement = document.getElementById('json-preview');
-    previewElement.innerHTML = '<pre>' + (isFormatted ? formatJSON(schema) : JSON.stringify(schema)) + '</pre>';
+    previewElement.innerHTML = '<pre>' + (isFormatted ? formatJSON(schema) : safeStringify(schema)) + '</pre>';
 }
 
 function formatJSON(obj) {
