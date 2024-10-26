@@ -7,7 +7,8 @@ let schema = {
     "title": rootTitle,
     "description": rootDescription,
     "type": "object",
-    "properties": {}
+    "properties": {},
+    "additionalProperties": false
 }
 
 document.getElementById('apply-pasted-schema').onclick = () => {
