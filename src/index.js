@@ -18,7 +18,7 @@ let currentNode = schema;
 let selectedNode = null;
 let parentNode = null;
 let currentOperation = 'add';
-let isFormatted = false;
+let isFormatted = true;
 
 let expandedNodes = new Set();
 
@@ -332,4 +332,5 @@ function safeStringify(obj) {
     });
 }
 
+document.getElementById('format-btn').textContent = 'Compact JSON';
 updateTreeView();
