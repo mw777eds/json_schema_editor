@@ -307,7 +307,10 @@ function applySchemaFromString(pastedSchema) {
             document.getElementById('schema-version').value = schema.$schema || '';
             document.getElementById('schema-id').value = schema.$id || '';
             updateTreeView();
-            feedback.textContent = 'Schema successfully applied.';
+            feedback.style.display = 'inline';
+            setTimeout(() => {
+                feedback.style.display = 'none';
+            }, 2000);
             feedback.classList.remove('error');
             document.getElementById('paste-schema').value = '';
         } else {
