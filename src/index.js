@@ -103,6 +103,9 @@ function selectNode(key, value, parent) {
     document.getElementById('description').value = value.description || '';
     document.getElementById('type').value = value.type || typeof value;
     document.getElementById('enum').value = value.enum ? value.enum.join(',') : '';
+    document.getElementById('default').value = value.default || '';
+    document.getElementById('patternProperties').value = value.patternProperties ? 
+        Object.entries(value.patternProperties).map(([pattern, prop]) => `${pattern}:${prop.type}`).join(',') : '';
     document.getElementById('required').checked = parent && parent.required && parent.required.includes(key);
     document.getElementById('add-btn').style.display = 'inline-block';
     document.getElementById('edit-btn').style.display = 'inline-block';
@@ -115,7 +118,23 @@ function addOrEditNode(isAdd) {
     const description = document.getElementById('description').value;
     const type = document.getElementById('type').value;
     const enumValues = document.getElementById('enum').value;
+    const defaultValue = document.getElementById('default').value;
+    const patternProperties = document.getElementById('patternProperties').value;
     const isRequired = document.getElementById('required').checked;
+
+    if (defaultValue) {
+        newNode.default = defaultValue;
+    }
+
+    if (patternProperties) {
+        newNode.patternProperties = {};
+        patternProperties.split(',').forEach(pair => {
+            const [pattern, type] = pair.split(':').map(v => v.trim());
+            if (pattern && type) {
+                newNode.patternProperties[pattern] = { type };
+            }
+        });
+    }
 
     let newNode = { 
         description, 
