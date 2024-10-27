@@ -198,8 +198,8 @@ function addOrEditNode(isAdd) {
     }
 
     if (type === 'object') {
-        newNode.properties = currentNode.properties ? { ...currentNode.properties } : {};
-        newNode.required = currentNode.required ? [...currentNode.required] : [];
+        newNode.properties = {};
+        newNode.required = [];
     }
     if (enumValues) {
         newNode.enum = enumValues.split(',').map(v => v.trim());
