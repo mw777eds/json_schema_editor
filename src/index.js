@@ -177,6 +177,16 @@ function addOrEditNode(isAdd) {
         if (maximum) newNode.maximum = parseFloat(maximum);
         if (exclusiveMinimum) newNode.exclusiveMinimum = parseFloat(exclusiveMinimum);
         if (exclusiveMaximum) newNode.exclusiveMaximum = parseFloat(exclusiveMaximum);
+    } else if (type === 'string') {
+        const minLength = document.getElementById('minLength').value;
+        const maxLength = document.getElementById('maxLength').value;
+
+        if (minLength) newNode.minLength = parseInt(minLength, 10);
+        if (maxLength) newNode.maxLength = parseInt(maxLength, 10);
+    }
+
+    if (defaultValue) {
+        newNode.default = type === 'number' ? parseFloat(defaultValue) : defaultValue;
     }
     if (patternProperties) {
         const [pattern, type] = patternProperties.split(/:(.+)/).map(v => v.trim());
