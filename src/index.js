@@ -161,6 +161,11 @@ function addOrEditNode(isAdd) {
     const patternProperties = document.getElementById('patternProperties').value;
     const isRequired = document.getElementById('required').checked;
 
+    let newNode = { 
+        description, 
+        type
+    };
+
     if (defaultValue) {
         newNode.default = defaultValue;
     }
