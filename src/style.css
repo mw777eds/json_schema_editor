@@ -146,7 +146,7 @@ button {
     width: 250px; /* Set a fixed width for inputs */
 }
 #schema-form #enum {
-    width: 120%;
+    width: 250px; /* Match other input widths */
     height: 30px;
     margin-bottom: 10px;
 }
