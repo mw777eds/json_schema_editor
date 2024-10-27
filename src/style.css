@@ -146,6 +146,6 @@ button {
 }
 #schema-form input[type="text"],
 #schema-form select {
-    width: 250px; /* Ensure all inputs match this width */
+    width: 300px; /* Ensure all inputs match this width */
 }
 }
