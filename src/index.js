@@ -161,16 +161,14 @@ function addOrEditNode(isAdd) {
 
     if (patternProperties) {
         newNode.patternProperties = {};
-        const pairs = patternProperties.match(/[^,]+:[^,]+/g);
-        if (pairs) {
-            pairs.forEach(pair => {
-                const [pattern, type] = pair.split(/:(.+)/).map(v => v.trim());
-                console.log(`Pattern: ${pattern}, Type: ${type}`); // Debugging line
-                if (pattern && type) {
-                    newNode.patternProperties[pattern] = { type };
-                }
-            });
-        }
+        const pairs = patternProperties.split(/,(?![^\[]*\])/); // Split on commas not within brackets
+        pairs.forEach(pair => {
+            const [pattern, type] = pair.split(/:(.+)/).map(v => v.trim());
+            console.log(`Pattern: ${pattern}, Type: ${type}`); // Debugging line
+            if (pattern && type) {
+                newNode.patternProperties[pattern] = { type };
+            }
+        });
     }
 
     if (type === 'object') {
