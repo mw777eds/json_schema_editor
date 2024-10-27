@@ -213,6 +213,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const typeSelect = document.getElementById('type');
     const numberFields = document.getElementById('number-fields');
     const exclusiveNumberFields = document.getElementById('exclusive-number-fields');
+    const stringFields = document.getElementById('string-fields');
+    const arrayFields = document.getElementById('array-fields');
+    const objectFields = document.getElementById('object-fields');
 
     typeSelect.addEventListener('change', () => {
         const selectedType = typeSelect.value;
