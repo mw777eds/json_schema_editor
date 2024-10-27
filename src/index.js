@@ -117,6 +117,10 @@ function addOrEditNode(isAdd) {
     const newKey = document.getElementById('title').value;
     const description = document.getElementById('description').value;
     const type = document.getElementById('type').value;
+    if (!type) {
+        alert('Please select a type.');
+        return;
+    }
     const enumValues = document.getElementById('enum').value;
     const defaultValue = document.getElementById('default').value;
     const patternProperties = document.getElementById('patternProperties').value;
