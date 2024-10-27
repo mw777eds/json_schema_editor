@@ -308,9 +308,21 @@ document.getElementById('delete-btn').onclick = () => {
 function resetForm() {
     document.getElementById('title').value = '';
     document.getElementById('description').value = '';
-    document.getElementById('type').value = 'string';
+    document.getElementById('type').value = '';
+    document.getElementById('default').value = '';
     document.getElementById('enum').value = '';
     document.getElementById('required').checked = false;
+    document.getElementById('minimum').value = '';
+    document.getElementById('maximum').value = '';
+    document.getElementById('exclusiveMinimum').value = '';
+    document.getElementById('exclusiveMaximum').value = '';
+    document.getElementById('minLength').value = '';
+    document.getElementById('maxLength').value = '';
+    document.getElementById('minItems').value = '';
+    document.getElementById('maxItems').value = '';
+    document.getElementById('minProperties').value = '';
+    document.getElementById('maxProperties').value = '';
+    document.getElementById('patternProperties').value = '';
     document.getElementById('add-btn').style.display = 'inline-block';
     document.getElementById('edit-btn').style.display = 'none';
     document.getElementById('delete-btn').style.display = 'none';
