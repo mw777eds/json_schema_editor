@@ -31,13 +31,11 @@ function updateTreeView() {
 }
 
 function restoreExpandedNodes() {
-    const patternPropertiesFields = document.getElementById('pattern-properties-fields');
     expandedNodes.forEach(key => {
         const nodeElement = document.querySelector(`[data-key="${key}"]`);
         if (nodeElement) {
             nodeElement.classList.add('expanded');
         }
-        patternPropertiesFields.style.display = selectedType === 'string' ? 'flex' : 'none';
     });
 }
 
@@ -163,7 +161,7 @@ function addOrEditNode(isAdd) {
 
     if (patternProperties) {
         newNode.patternProperties = {};
-        patternProperties.split(',').forEach(pair => {
+        patternProperties.split(';').forEach(pair => {
             const [pattern, type] = pair.split(':').map(v => v.trim());
             console.log(`Pattern: ${pattern}, Type: ${type}`); // Debugging line
             if (pattern && type) {
