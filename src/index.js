@@ -105,13 +105,37 @@ function selectNode(key, value, parent) {
     document.getElementById('type').value = value.type || typeof value;
     document.getElementById('enum').value = value.enum ? value.enum.join(',') : '';
     document.getElementById('default').value = value.default || '';
-    document.getElementById('patternProperties').value = value.patternProperties ? 
-        Object.entries(value.patternProperties).map(([pattern, prop]) => `${pattern}:${prop.type}`).join(',') : '';
+    if (value.patternProperties) {
+        document.getElementById('patternProperties').value = 
+            Object.entries(value.patternProperties)
+                  .map(([pattern, prop]) => `${pattern}:${prop.type}`)
+                  .join(',');
+    } else {
+        document.getElementById('patternProperties').value = '';
+    }
+
     document.getElementById('required').checked = parent && parent.required && parent.required.includes(key);
     document.getElementById('add-btn').style.display = 'inline-block';
     document.getElementById('edit-btn').style.display = 'inline-block';
     document.getElementById('delete-btn').style.display = 'inline-block';
     document.getElementById('current-operation').textContent = `Editing: ${key}`;
+
+    // Show/hide fields based on type
+    const typeSelect = document.getElementById('type');
+    const numberFields = document.getElementById('number-fields');
+    const exclusiveNumberFields = document.getElementById('exclusive-number-fields');
+    const patternPropertiesFields = document.getElementById('pattern-properties-fields');
+    const stringFields = document.getElementById('string-fields');
+    const arrayFields = document.getElementById('array-fields');
+    const objectFields = document.getElementById('object-fields');
+
+    const selectedType = value.type || typeof value;
+    numberFields.style.display = selectedType === 'number' ? 'flex' : 'none';
+    exclusiveNumberFields.style.display = selectedType === 'number' ? 'flex' : 'none';
+    stringFields.style.display = selectedType === 'string' ? 'flex' : 'none';
+    arrayFields.style.display = selectedType === 'array' ? 'flex' : 'none';
+    objectFields.style.display = selectedType === 'object' ? 'flex' : 'none';
+    patternPropertiesFields.style.display = selectedType === 'object' ? 'flex' : 'none';
 }
 
 function addOrEditNode(isAdd) {
