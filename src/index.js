@@ -164,6 +164,7 @@ function addOrEditNode(isAdd) {
         newNode.patternProperties = {};
         patternProperties.split(',').forEach(pair => {
             const [pattern, type] = pair.split(':').map(v => v.trim());
+            console.log(`Pattern: ${pattern}, Type: ${type}`); // Debugging line
             if (pattern && type) {
                 newNode.patternProperties[pattern] = { type };
             }
