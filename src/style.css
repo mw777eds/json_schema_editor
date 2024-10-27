@@ -52,7 +52,7 @@ button {
 }
 .top-section {
     display: flex;
-    height: 33vh;
+    height: 50vh;
     margin-bottom: 20px;
 }
 #tree-view {
@@ -67,7 +67,7 @@ button {
     overflow-y: auto;
 }
 #preview {
-    height: 67vh;
+    height: 50vh;
     border-top: 1px solid #ccc;
     padding: 10px;
     overflow-y: auto;
