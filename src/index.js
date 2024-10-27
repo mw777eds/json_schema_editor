@@ -209,6 +209,23 @@ function addOrEditNode(isAdd) {
     resetForm();
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+    const typeSelect = document.getElementById('type');
+    const numberFields = document.getElementById('number-fields');
+    const exclusiveNumberFields = document.getElementById('exclusive-number-fields');
+
+    typeSelect.addEventListener('change', () => {
+        const selectedType = typeSelect.value;
+        if (selectedType === 'number') {
+            numberFields.style.display = 'flex';
+            exclusiveNumberFields.style.display = 'flex';
+        } else {
+            numberFields.style.display = 'none';
+            exclusiveNumberFields.style.display = 'none';
+        }
+    });
+});
+
 document.getElementById('add-btn').onclick = () => addOrEditNode(true);
 document.getElementById('edit-btn').onclick = () => addOrEditNode(false);
 
