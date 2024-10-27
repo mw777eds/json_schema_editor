@@ -216,13 +216,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     typeSelect.addEventListener('change', () => {
         const selectedType = typeSelect.value;
-        if (selectedType === 'number') {
-            numberFields.style.display = 'flex';
-            exclusiveNumberFields.style.display = 'flex';
-        } else {
-            numberFields.style.display = 'none';
-            exclusiveNumberFields.style.display = 'none';
-        }
+        numberFields.style.display = selectedType === 'number' ? 'flex' : 'none';
+        exclusiveNumberFields.style.display = selectedType === 'number' ? 'flex' : 'none';
+        stringFields.style.display = selectedType === 'string' ? 'flex' : 'none';
+        arrayFields.style.display = selectedType === 'array' ? 'flex' : 'none';
+        objectFields.style.display = selectedType === 'object' ? 'flex' : 'none';
     });
 });
 
