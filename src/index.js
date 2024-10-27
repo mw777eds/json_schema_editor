@@ -142,10 +142,14 @@ function addOrEditNode(isAdd) {
     const description = document.getElementById('description').value;
     const type = document.getElementById('type').value;
     const feedback = document.getElementById('validation-feedback');
-    feedback.style.color = 'red';
+    feedback.style.color = '#8B0000'; // Darker red
 
-    if (!newKey || !type) {
-        feedback.textContent = 'Title and type are required.';
+    let missingFields = [];
+    if (!newKey) missingFields.push('Title');
+    if (!type) missingFields.push('Type');
+
+    if (missingFields.length > 0) {
+        feedback.textContent = `${missingFields.join(' and ')} ${missingFields.length > 1 ? 'are' : 'is'} required.`;
         feedback.style.display = 'inline';
         setTimeout(() => {
             feedback.style.display = 'none';
