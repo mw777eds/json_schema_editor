@@ -99,7 +99,7 @@ function selectNode(key, value, parent) {
     selectedNode = { key, value, parent };
     parentNode = parent;
     currentNode = value;
-    document.getElementById('title').value = key;
+    document.getElementById('title').value = newKey;
     document.getElementById('description').value = value.description || '';
     document.getElementById('type').value = value.type || typeof value;
     document.getElementById('enum').value = value.enum ? value.enum.join(',') : '';
@@ -145,7 +145,7 @@ function addOrEditNode(isAdd) {
     feedback.style.color = '#8B0000'; // Darker red
 
     let missingFields = [];
-    if (!newKey) missingFields.push('Title');
+    if (!newKey) missingFields.push('Key');
     if (!type) missingFields.push('Type');
 
     if (missingFields.length > 0) {
