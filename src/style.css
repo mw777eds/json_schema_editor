@@ -72,6 +72,11 @@ button {
     padding: 10px;
     overflow-y: auto;
 }
+
+#json-preview {
+    max-height: 100%;
+    overflow-y: auto;
+}
 .tree-node {
     margin-left: 20px;
     cursor: pointer;
