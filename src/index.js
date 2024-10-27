@@ -296,7 +296,7 @@ document.getElementById('schema-id').onchange = (e) => {
     updatePreview();
 };
 
-function applySchemaFromString(pastedSchema) {
+window.applySchemaFromString = function (pastedSchema) {
     const feedback = document.getElementById('paste-feedback');
     try {
         const parsedSchema = JSON.parse(pastedSchema);
