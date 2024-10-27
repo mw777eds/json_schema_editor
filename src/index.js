@@ -206,8 +206,8 @@ function addOrEditNode(isAdd) {
     }
 
     if (type === 'object') {
-        newNode.properties = currentNode.properties ? { ...currentNode.properties } : {};
-        newNode.required = currentNode.required ? [...currentNode.required] : [];
+        newNode.properties = {};
+        newNode.required = [];
     } else if (type === 'array') {
         newNode.items = currentNode.items ? { ...currentNode.items } : { type: 'string' };
     }
