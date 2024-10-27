@@ -73,9 +73,13 @@ button {
     overflow-y: auto;
 }
 
+#json-preview-container {
+    height: calc(100% - 40px); /* Adjust based on header/button height */
+    overflow-y: auto;
+}
+
 #json-preview {
     max-height: 100%;
-    overflow-y: auto;
 }
 .tree-node {
     margin-left: 20px;
