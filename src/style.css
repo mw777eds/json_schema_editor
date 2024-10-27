@@ -145,7 +145,8 @@ button {
 #schema-form select {
     width: 300px; /* Increase width for inputs */
 }
-#schema-form #enum {
-    width: 250px; /* Match other input widths */
+#schema-form #enum,
+#schema-form #type {
+    width: 300px; /* Match other input widths */
     margin-bottom: 10px;
 }
