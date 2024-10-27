@@ -167,7 +167,17 @@ function addOrEditNode(isAdd) {
         type
     };
 
-    if (patternProperties) {
+    if (type === 'number') {
+        const minimum = document.getElementById('minimum').value;
+        const maximum = document.getElementById('maximum').value;
+        const exclusiveMinimum = document.getElementById('exclusiveMinimum').value;
+        const exclusiveMaximum = document.getElementById('exclusiveMaximum').value;
+
+        if (minimum) newNode.minimum = parseFloat(minimum);
+        if (maximum) newNode.maximum = parseFloat(maximum);
+        if (exclusiveMinimum) newNode.exclusiveMinimum = parseFloat(exclusiveMinimum);
+        if (exclusiveMaximum) newNode.exclusiveMaximum = parseFloat(exclusiveMaximum);
+    }
         const [pattern, type] = patternProperties.split(/:(.+)/).map(v => v.trim());
         if (pattern && type) {
             newNode.patternProperties = {
