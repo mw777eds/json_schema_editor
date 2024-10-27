@@ -141,8 +141,15 @@ function addOrEditNode(isAdd) {
     const newKey = document.getElementById('title').value;
     const description = document.getElementById('description').value;
     const type = document.getElementById('type').value;
-    if (!type) {
-        alert('Please select a type.');
+    const feedback = document.getElementById('validation-feedback');
+    feedback.style.color = 'red';
+
+    if (!newKey || !type) {
+        feedback.textContent = 'Title and type are required.';
+        feedback.style.display = 'inline';
+        setTimeout(() => {
+            feedback.style.display = 'none';
+        }, 2000);
         return;
     }
     const enumValues = document.getElementById('enum').value;
