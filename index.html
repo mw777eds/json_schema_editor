@@ -113,6 +113,42 @@
                     <input type="checkbox" id="required" tabindex="0">
                 </div>
             </div>
+            <div id="number-fields" style="display: none; flex-direction: column;">
+                <div style="display: flex; align-items: center;">
+                    <div style="width: 100px; text-align: right; margin-right: 10px;">
+                        <label for="minimum">Minimum:</label>
+                    </div>
+                    <div>
+                        <input type="number" id="minimum" step="any">
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <div style="width: 100px; text-align: right; margin-right: 10px;">
+                        <label for="maximum">Maximum:</label>
+                    </div>
+                    <div>
+                        <input type="number" id="maximum" step="any">
+                    </div>
+                </div>
+            </div>
+            <div id="exclusive-number-fields" style="display: none; flex-direction: column;">
+                <div style="display: flex; align-items: center;">
+                    <div style="width: 100px; text-align: right; margin-right: 10px;">
+                        <label for="exclusiveMinimum">Exclusive Min:</label>
+                    </div>
+                    <div>
+                        <input type="number" id="exclusiveMinimum" step="any">
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <div style="width: 100px; text-align: right; margin-right: 10px;">
+                        <label for="exclusiveMaximum">Exclusive Max:</label>
+                    </div>
+                    <div>
+                        <input type="number" id="exclusiveMaximum" step="any">
+                    </div>
+                </div>
+            </div>
             <div id="button-container" style="display: flex; align-items: center; margin-top: 10px; justify-content: flex-start;">
                 <button type="button" id="add-btn">Add</button>
                 <button type="button" id="edit-btn" style="display:none;">Edit</button>
