@@ -12,7 +12,8 @@ let schema = {
 document.getElementById('apply-pasted-schema').onclick = () => {
     const pastedSchema = document.getElementById('paste-schema').value;
     applySchemaFromString(pastedSchema);
-};
+}
+window.applySchemaFromString = applySchemaFromString;
 let currentNode = schema;
 let selectedNode = null;
 let parentNode = null;
@@ -296,7 +297,7 @@ document.getElementById('schema-id').onchange = (e) => {
     updatePreview();
 };
 
-window.applySchemaFromString = function (pastedSchema) {
+function applySchemaFromString(pastedSchema) {
     const feedback = document.getElementById('paste-feedback');
     try {
         const parsedSchema = JSON.parse(pastedSchema);
