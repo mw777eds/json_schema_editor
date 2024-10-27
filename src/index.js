@@ -36,6 +36,7 @@ function restoreExpandedNodes() {
         if (nodeElement) {
             nodeElement.classList.add('expanded');
         }
+        patternPropertiesFields.style.display = selectedType === 'string' ? 'flex' : 'none';
     });
 }
 
@@ -217,6 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const typeSelect = document.getElementById('type');
     const numberFields = document.getElementById('number-fields');
     const exclusiveNumberFields = document.getElementById('exclusive-number-fields');
+    const patternPropertiesFields = document.getElementById('pattern-properties-fields');
     const stringFields = document.getElementById('string-fields');
     const arrayFields = document.getElementById('array-fields');
     const objectFields = document.getElementById('object-fields');
