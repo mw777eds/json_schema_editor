@@ -131,6 +131,11 @@ function addOrEditNode(isAdd) {
         newNode.default = defaultValue;
     }
 
+    let newNode = { 
+        description, 
+        type
+    };
+
     if (patternProperties) {
         newNode.patternProperties = {};
         patternProperties.split(',').forEach(pair => {
@@ -140,11 +145,6 @@ function addOrEditNode(isAdd) {
             }
         });
     }
-
-    let newNode = { 
-        description, 
-        type
-    };
 
     if (type === 'object') {
         newNode.properties = currentNode.properties ? { ...currentNode.properties } : {};
