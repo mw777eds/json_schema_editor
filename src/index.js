@@ -177,6 +177,7 @@ function addOrEditNode(isAdd) {
         if (maximum) newNode.maximum = parseFloat(maximum);
         if (exclusiveMinimum) newNode.exclusiveMinimum = parseFloat(exclusiveMinimum);
         if (exclusiveMaximum) newNode.exclusiveMaximum = parseFloat(exclusiveMaximum);
+    }
     if (patternProperties) {
         const [pattern, type] = patternProperties.split(/:(.+)/).map(v => v.trim());
         if (pattern && type) {
