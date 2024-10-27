@@ -5,7 +5,8 @@ let schema = {
     "type": "object",
     "properties": {},
     "required": [],
-    "additionalProperties": false
+    "additionalProperties": false,
+    "$schema": "https://json-schema.org/draft/2020-12/schema"
 }
 
 document.getElementById('apply-pasted-schema').onclick = () => {
