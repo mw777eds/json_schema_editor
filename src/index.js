@@ -230,7 +230,12 @@ document.addEventListener('DOMContentLoaded', () => {
         stringFields.style.display = selectedType === 'string' ? 'flex' : 'none';
         arrayFields.style.display = selectedType === 'array' ? 'flex' : 'none';
         objectFields.style.display = selectedType === 'object' ? 'flex' : 'none';
+        patternPropertiesFields.style.display = selectedType === 'string' ? 'flex' : 'none';
     });
+    
+    // Trigger the change event initially to set correct initial state
+    const initialType = typeSelect.value;
+    patternPropertiesFields.style.display = initialType === 'string' ? 'flex' : 'none';
 });
 
 document.getElementById('add-btn').onclick = () => addOrEditNode(true);
