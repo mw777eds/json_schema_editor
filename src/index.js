@@ -146,6 +146,7 @@ function selectNode(key, value, parent) {
     arrayFields.style.display = selectedType === 'array' ? 'flex' : 'none';
     objectFields.style.display = selectedType === 'object' ? 'flex' : 'none';
     patternPropertiesFields.style.display = selectedType === 'object' ? 'flex' : 'none';
+    document.getElementById('pattern').style.display = selectedType === 'string' ? 'flex' : 'none';
 }
 
 /* 
@@ -193,6 +194,7 @@ function createNodeObject(nodeKey, type) {
     const enumValues = document.getElementById('enum').value;
     const defaultValue = document.getElementById('default').value;
     const patternProperties = document.getElementById('patternProperties').value;
+    const pattern = document.getElementById('pattern').value;
     const isRequired = document.getElementById('required').checked;
 
     let newNode = { description, type };
@@ -225,6 +227,7 @@ function createNodeObject(nodeKey, type) {
 
         if (minLength) newNode.minLength = parseInt(minLength, 10);
         if (maxLength) newNode.maxLength = parseInt(maxLength, 10);
+        if (pattern) newNode.pattern = pattern;
     }
 
     if (patternProperties) {
@@ -325,10 +328,12 @@ document.addEventListener('DOMContentLoaded', () => {
         arrayFields.style.display = selectedType === 'array' ? 'flex' : 'none';
         objectFields.style.display = selectedType === 'object' ? 'flex' : 'none';
         patternPropertiesFields.style.display = selectedType === 'object' ? 'flex' : 'none';
+        document.getElementById('pattern').style.display = selectedType === 'string' ? 'flex' : 'none';
     });
 
     const initialType = typeSelect.value;
     patternPropertiesFields.style.display = initialType === 'object' ? 'flex' : 'none';
+    document.getElementById('pattern').style.display = initialType === 'string' ? 'flex' : 'none';
 });
 
 /* 
@@ -377,6 +382,7 @@ function resetForm() {
     document.getElementById('minProperties').value = '';
     document.getElementById('maxProperties').value = '';
     document.getElementById('patternProperties').value = '';
+    document.getElementById('pattern').value = '';
     document.getElementById('add-btn').style.display = 'inline-block';
     document.getElementById('edit-btn').style.display = 'none';
     document.getElementById('delete-btn').style.display = 'none';
