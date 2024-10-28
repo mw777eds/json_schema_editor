@@ -8,7 +8,6 @@ let schema = {
 
 document.getElementById('apply-pasted-schema').onclick = () => {
     const pastedSchema = document.getElementById('paste-schema').value;
-    console.log('Pasted Schema:', pastedSchema); // Debugging line
     applySchemaFromString(pastedSchema);
 };
 
@@ -25,7 +24,6 @@ let state = {
 let expandedNodes = new Set();
 
 function updateTreeView() {
-    console.log('Updating Tree View...'); // Debugging line
     const treeView = document.getElementById('schema-tree');
     treeView.innerHTML = '';
     renderNode(schema, treeView, schema.title || 'root', null);
@@ -95,7 +93,6 @@ function renderNode(node, parentElement, key, parent) {
 }
 
 function selectNode(key, value, parent) {
-    console.log('Selecting Node:', key, value); // Debugging line
     state.selectedNode = { key, value, parent };
     state.parentNode = parent;
     state.currentNode = value;
@@ -137,12 +134,9 @@ function addOrEditNode(isAddOperation) {
     const type = document.getElementById('type').value;
     const feedback = document.getElementById('validation-feedback');
 
-    console.log('Adding/Editing Node:', nodeKey, type); // Debugging line
-
     if (!validateNodeInput(nodeKey, type, feedback)) return;
 
     const newNode = createNodeObject(nodeKey, type);
-    console.log('New Node Created:', newNode); // Debugging line
     updateSchema(newNode, isAddOperation);
     updateTreeView();
     validateSchema();
@@ -172,18 +166,12 @@ function createNodeObject(nodeKey, type) {
 
     let newNode = { description, type };
 
-    console.log('Node Type:', type); // Debugging line to check the type
-
     if (type === 'boolean') {
-        console.log('Default Value:', defaultValue); // Debugging line
         if (defaultValue.toLowerCase() === 'true' || defaultValue === '1') {
             newNode.default = true; // Set as boolean true
-            console.log('New Node Default:', newNode.default); // Debugging line
         } else if (defaultValue.toLowerCase() === 'false' || defaultValue === '0') {
             newNode.default = false; // Set as boolean false
-            console.log('New Node Default:', newNode.default); // Debugging line
         } else {
-            console.error('Invalid default value for boolean:', defaultValue); // Debugging line
             throw new Error('Default value for boolean must be true, false, 1, or 0.');
         }
     } else if (defaultValue) {
@@ -227,12 +215,10 @@ function createNodeObject(nodeKey, type) {
         newNode.items = state.currentNode.items ? { ...state.currentNode.items } : { type: 'string' };
     }
 
-    console.log('Node Object Created:', newNode); // Debugging line
     return newNode;
 }
 
 function updateSchema(newNode, isAddOperation) {
-    console.log('Updating Schema...'); // Debugging line
     let currentNode = state.currentNode;
     const pathParts = document.getElementById('title').value.split('.');
     const lastPart = pathParts.pop();
@@ -277,8 +263,6 @@ function updateSchema(newNode, isAddOperation) {
             state.parentNode.required.splice(requiredIndex, 1);
         }
     }
-
-    console.log('Schema Updated:', schema); // Debugging line
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -292,7 +276,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     typeSelect.addEventListener('change', () => {
         const selectedType = typeSelect.value;
-        console.log('Type Selected:', selectedType); // Debugging line
         numberFields.style.display = selectedType === 'number' ? 'flex' : 'none';
         exclusiveNumberFields.style.display = selectedType === 'number' ? 'flex' : 'none';
         stringFields.style.display = selectedType === 'string' ? 'flex' : 'none';
@@ -306,17 +289,14 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 document.getElementById('add-btn').onclick = () => {
-    console.log('Add Button Clicked'); // Debugging line
     addOrEditNode(true);
 };
 document.getElementById('edit-btn').onclick = () => {
-    console.log('Edit Button Clicked'); // Debugging line
     addOrEditNode(false);
 };
 
 document.getElementById('delete-btn').onclick = () => {
     if (state.selectedNode && state.parentNode) {
-        console.log('Deleting Node:', state.selectedNode.key); // Debugging line
         delete state.parentNode.properties[state.selectedNode.key];
         const requiredIndex = state.parentNode.required ? state.parentNode.required.indexOf(state.selectedNode.key) : -1;
         if (requiredIndex > -1) {
@@ -329,7 +309,6 @@ document.getElementById('delete-btn').onclick = () => {
 };
 
 function resetForm() {
-    console.log('Resetting Form'); // Debugging line
     document.getElementById('title').value = '';
     document.getElementById('description').value = '';
     document.getElementById('type').value = '';
@@ -374,11 +353,9 @@ document.getElementById('save-btn').onclick = () => {
         try {
             window.FileMaker.PerformScript('SaveJSONSchema', schemaString);
         } catch (err) {
-            console.error('Failed to save JSON schema:', err);
             alert('Failed to save JSON schema. Please check the console for more details.');
         }
     } else {
-        console.warn('FileMaker integration is not available.');
         alert('FileMaker integration is not available. The schema cannot be saved.');
     }
 };
@@ -425,7 +402,6 @@ document.getElementById('copy-btn').onclick = async () => {
             copyFeedback.style.display = 'none';
         }, 2000);
     } catch (err) {
-        console.error('Failed to copy JSON:', err);
         alert('Failed to copy JSON. Please check the console for more details.');
     }
 };
@@ -439,10 +415,8 @@ function applySchemaFromString(pastedSchema) {
     const feedback = document.getElementById('paste-feedback');
     try {
         const parsedSchema = JSON.parse(pastedSchema);
-        console.log('Parsed Schema:', parsedSchema); // Debugging line
         if (typeof parsedSchema === 'object' && parsedSchema !== null) {
             schema = parsedSchema;
-            console.log('Schema After Applying:', schema); // Debugging line
             document.getElementById('schema-version').value = schema.$schema || '';
             document.getElementById('schema-id').value = schema.$id || '';
             updateTreeView();
