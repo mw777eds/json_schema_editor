@@ -14,11 +14,13 @@ document.getElementById('apply-pasted-schema').onclick = () => {
     applySchemaFromString(pastedSchema);
 }
 window.applySchemaFromString = applySchemaFromString;
-let currentNode = schema;
-let selectedNode = null;
-let parentNode = null;
-let currentOperation = 'add';
-let isFormatted = true;
+let state = {
+    currentNode: schema,
+    selectedNode: null,
+    parentNode: null,
+    currentOperation: 'add',
+    isFormatted: true
+};
 
 let expandedNodes = new Set();
 
@@ -98,7 +100,7 @@ function renderNode(node, parentElement, key, parent) {
 function selectNode(key, value, parent) {
     selectedNode = { key, value, parent };
     parentNode = parent;
-    currentNode = value;
+    state.currentNode = value;
     document.getElementById('title').value = key;
     document.getElementById('description').value = value.description || '';
     document.getElementById('type').value = value.type || typeof value;
@@ -117,7 +119,7 @@ function selectNode(key, value, parent) {
     document.getElementById('add-btn').style.display = 'inline-block';
     document.getElementById('edit-btn').style.display = 'inline-block';
     document.getElementById('delete-btn').style.display = 'inline-block';
-    document.getElementById('current-operation').textContent = `Editing: ${key}`;
+    document.getElementById('current-operation').textContent = `${state.currentOperation === 'add' ? 'Adding' : 'Editing'}: ${key}`;
 
     // Show/hide fields based on type
     const typeSelect = document.getElementById('type');
@@ -212,7 +214,7 @@ function addOrEditNode(isAddOperation) {
         newNode.items = currentNode.items ? { ...currentNode.items } : { type: 'string' };
     }
 
-    let currentNode = schema;
+    let currentNode = state.currentNode;
     const pathParts = newKey.split('.');
     const lastPart = pathParts[pathParts.length - 1];
 
@@ -226,37 +228,37 @@ function addOrEditNode(isAddOperation) {
         currentObj = currentObj.properties[pathParts[i]];
     }
 
-    if (!isAdd && selectedNode) {
+    if (!isAddOperation && state.selectedNode) {
         // Remove the old node from the correct parent
-        if (parentNode && parentNode.properties) {
-            delete parentNode.properties[selectedNode.key];
-            const requiredIndex = parentNode.required ? parentNode.required.indexOf(selectedNode.key) : -1;
+        if (state.parentNode && state.parentNode.properties) {
+            delete state.parentNode.properties[state.selectedNode.key];
+            const requiredIndex = state.parentNode.required ? state.parentNode.required.indexOf(state.selectedNode.key) : -1;
             if (requiredIndex > -1) {
-                parentNode.required.splice(requiredIndex, 1);
+                state.parentNode.required.splice(requiredIndex, 1);
             }
         }
     }
 
-    // Ensure parentNode is correctly set
-    if (!parentNode) {
-        parentNode = currentObj;
+    // Ensure state.parentNode is correctly set
+    if (!state.parentNode) {
+        state.parentNode = currentNode;
     }
 
     // Add the new node
-    if (!parentNode.properties) {
-        parentNode.properties = {};
+    if (!state.parentNode.properties) {
+        state.parentNode.properties = {};
     }
-    parentNode.properties[lastPart] = newNode;
+    state.parentNode.properties[lastPart] = nodeValue;
 
     if (isRequired) {
-        if (!parentNode.required) parentNode.required = [];
-        if (!parentNode.required.includes(lastPart)) {
-            parentNode.required.push(lastPart);
+        if (!state.parentNode.required) state.parentNode.required = [];
+        if (!state.parentNode.required.includes(lastPart)) {
+            state.parentNode.required.push(lastPart);
         }
-    } else if (parentNode.required) {
-        const requiredIndex = parentNode.required.indexOf(lastPart);
+    } else if (state.parentNode.required) {
+        const requiredIndex = state.parentNode.required.indexOf(lastPart);
         if (requiredIndex > -1) {
-            parentNode.required.splice(requiredIndex, 1);
+            state.parentNode.required.splice(requiredIndex, 1);
         }
     }
 
@@ -293,11 +295,11 @@ document.getElementById('add-btn').onclick = () => addOrEditNode(true);
 document.getElementById('edit-btn').onclick = () => addOrEditNode(false);
 
 document.getElementById('delete-btn').onclick = () => {
-    if (selectedNode && parentNode) {
-        delete parentNode.properties[selectedNode.key];
-        const requiredIndex = parentNode.required ? parentNode.required.indexOf(selectedNode.key) : -1;
+    if (state.selectedNode && state.parentNode) {
+        delete state.parentNode.properties[state.selectedNode.key];
+        const requiredIndex = state.parentNode.required ? state.parentNode.required.indexOf(state.selectedNode.key) : -1;
         if (requiredIndex > -1) {
-            parentNode.required.splice(requiredIndex, 1);
+            state.parentNode.required.splice(requiredIndex, 1);
         }
         updateTreeView();
         validateSchema();
@@ -326,9 +328,9 @@ function resetForm() {
     document.getElementById('add-btn').style.display = 'inline-block';
     document.getElementById('edit-btn').style.display = 'none';
     document.getElementById('delete-btn').style.display = 'none';
-    selectedNode = null;
-    parentNode = null;
-    currentNode = schema;
+    state.selectedNode = null;
+    state.parentNode = null;
+    state.currentNode = schema;
     document.getElementById('current-operation').textContent = '';
 }
 
@@ -347,15 +349,21 @@ function validateSchema() {
 document.getElementById('save-btn').onclick = () => {
     const schemaString = safeStringify(schema);
     if (typeof window.FileMaker !== 'undefined') {
-        window.FileMaker.PerformScript('SaveJSONSchema', schemaString);
+        try {
+            window.FileMaker.PerformScript('SaveJSONSchema', schemaString);
+        } catch (err) {
+            console.error('Failed to save JSON schema:', err);
+            alert('Failed to save JSON schema. Please check the console for more details.');
+        }
     } else {
-        alert('FileMaker integration is not available.');
+        console.warn('FileMaker integration is not available.');
+        alert('FileMaker integration is not available. The schema cannot be saved.');
     }
 };
 
 function updatePreview() {
     const previewElement = document.getElementById('json-preview');
-    previewElement.innerHTML = '<pre>' + (isFormatted ? formatJSON(schema) : safeStringify(schema)) + '</pre>';
+    previewElement.innerHTML = '<pre>' + (state.isFormatted ? formatJSON(schema) : safeStringify(schema)) + '</pre>';
 }
 
 function formatJSON(obj) {
@@ -384,8 +392,8 @@ function formatJSON(obj) {
 }
 
 document.getElementById('format-btn').onclick = () => {
-    isFormatted = !isFormatted;
-    document.getElementById('format-btn').textContent = isFormatted ? 'Compact JSON' : 'Format JSON';
+    state.isFormatted = !state.isFormatted;
+    document.getElementById('format-btn').textContent = state.isFormatted ? 'Compact JSON' : 'Format JSON';
     updatePreview();
 };
 
@@ -399,7 +407,8 @@ document.getElementById('copy-btn').onclick = async () => {
             copyFeedback.style.display = 'none';
         }, 2000);
     } catch (err) {
-        alert('Failed to copy JSON: ' + err);
+        console.error('Failed to copy JSON:', err);
+        alert('Failed to copy JSON. Please check the console for more details.');
     }
 };
 
