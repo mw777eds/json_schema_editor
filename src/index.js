@@ -149,7 +149,7 @@ function selectNode(key, value, parent) {
         arrayFields,
         objectFields,
         patternPropertiesFields,
-        document.getElementById('pattern-wrapper') // Include the wrapper
+        document.getElementById('pattern-fields') // Updated to new id
     ];
 
     allFields.forEach(field => field.style.display = 'none'); // Hide all fields
@@ -160,7 +160,7 @@ function selectNode(key, value, parent) {
         exclusiveNumberFields.style.display = 'flex';
     } else if (selectedType === 'string') {
         stringFields.style.display = 'flex';
-        document.getElementById('pattern-wrapper').style.display = 'flex'; // Show pattern wrapper
+        document.getElementById('pattern-fields').style.display = 'flex'; // Updated to new id
     } else if (selectedType === 'array') {
         arrayFields.style.display = 'flex';
     } else if (selectedType === 'object') {
@@ -347,7 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
     arrayFields.style.display = 'none';
     objectFields.style.display = 'none';
     patternPropertiesFields.style.display = 'none';
-    document.getElementById('pattern-wrapper').style.display = 'none';
+    document.getElementById('pattern-fields').style.display = 'none'; // Updated to new id
 
     typeSelect.addEventListener('change', () => {
         const selectedType = typeSelect.value;
@@ -357,12 +357,12 @@ document.addEventListener('DOMContentLoaded', () => {
         arrayFields.style.display = selectedType === 'array' ? 'flex' : 'none';
         objectFields.style.display = selectedType === 'object' ? 'flex' : 'none';
         patternPropertiesFields.style.display = selectedType === 'object' ? 'flex' : 'none';
-        document.getElementById('pattern-wrapper').style.display = selectedType === 'string' ? 'flex' : 'none'; // Show pattern wrapper
+        document.getElementById('pattern-fields').style.display = selectedType === 'string' ? 'flex' : 'none'; // Updated to new id
     });
 
     const initialType = typeSelect.value;
     patternPropertiesFields.style.display = initialType === 'object' ? 'flex' : 'none';
-    document.getElementById('pattern-wrapper').style.display = initialType === 'string' ? 'flex' : 'none'; // Show pattern wrapper
+    document.getElementById('pattern-fields').style.display = initialType === 'string' ? 'flex' : 'none'; // Updated to new id
 });
 
 /* 
