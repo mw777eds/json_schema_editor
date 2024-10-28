@@ -147,6 +147,7 @@ function selectNode(key, value, parent) {
     objectFields.style.display = selectedType === 'object' ? 'flex' : 'none';
     patternPropertiesFields.style.display = selectedType === 'object' ? 'flex' : 'none';
     document.getElementById('pattern').style.display = selectedType === 'string' ? 'flex' : 'none';
+    document.getElementById('pattern-wrapper').style.display = selectedType === 'string' ? 'flex' : 'none'; // Show pattern field
 }
 
 /* 
@@ -329,11 +330,13 @@ document.addEventListener('DOMContentLoaded', () => {
         objectFields.style.display = selectedType === 'object' ? 'flex' : 'none';
         patternPropertiesFields.style.display = selectedType === 'object' ? 'flex' : 'none';
         document.getElementById('pattern').style.display = selectedType === 'string' ? 'flex' : 'none';
+        document.getElementById('pattern-wrapper').style.display = selectedType === 'string' ? 'flex' : 'none'; // Show pattern field
     });
 
     const initialType = typeSelect.value;
     patternPropertiesFields.style.display = initialType === 'object' ? 'flex' : 'none';
     document.getElementById('pattern').style.display = initialType === 'string' ? 'flex' : 'none';
+    document.getElementById('pattern-wrapper').style.display = initialType === 'string' ? 'flex' : 'none'; // Show pattern field
 });
 
 /* 
