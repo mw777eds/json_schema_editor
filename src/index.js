@@ -98,8 +98,8 @@ function renderNode(node, parentElement, key, parent) {
 }
 
 function selectNode(key, value, parent) {
-    selectedNode = { key, value, parent };
-    parentNode = parent;
+    state.selectedNode = { key, value, parent };
+    state.parentNode = parent;
     state.currentNode = value;
     document.getElementById('title').value = key;
     document.getElementById('description').value = value.description || '';
