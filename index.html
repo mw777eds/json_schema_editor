@@ -7,13 +7,12 @@
 <style>
   @import "./src/style.css";
 </style>
-
 </head>
 <body>
 <main class="top-section">
     <section id="editor">
         <h2>JSON Schema Editor <span id="apply-feedback" style="display: none; color: green; font-size: 14px; margin-left: 10px;">Schema successfully applied</span></h2>
-        <button type="button" id="toggle-schema-options">Schema Options</button>
+        <button type="button" id="toggle-schema-options" aria-label="Toggle schema options">Schema Options</button>
         <div id="schema-options" style="display: none;">
             <div style="display: flex; align-items: center;">
                 <div style="width: 150px; text-align: right; margin-right: 10px;">
@@ -227,7 +226,6 @@
 
 <script type="module">
       import "./src/index.js";
-    </script>
-  </body>
+</script>
 </body>
 </html>

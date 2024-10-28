@@ -1,54 +1,64 @@
-body {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-family: 'Arial', sans-serif;
-  font-size: 16px;
-  line-height: 1;
-  color: #000;
-  background-color: #fff;
-  margin: 10;
-  overflow: hidden;
-
-p{
-  color:#282828;
-  font-size: 16px;
+:root {
+    --primary-color: #0091CE;
+    --background-color: #fff;
+    --text-color: #000;
+    --error-color: red;
 }
 
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    line-height: 1;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    margin: 10;
+    overflow: hidden;
+}
+
+p {
+    color: #282828;
+    font-size: 16px;
+}
 
 h1 {
-  background-color:#006690;
-  color: #fff;
-  font-size: 22px;
-  font-weight: 400;
-  line-height: 1.2;
-  margin: 0 0 10px;
+    background-color: #006690;
+    color: #fff;
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 1.2;
+    margin: 0 0 10px;
 }
 
 .tintedBlackLeft {
-  background-color:#00000033;
-  color: #fff;
-  text-transform: uppercase;
-  font-size: 12px;
-  font-weight: 400;
-  line-height: 1.2;
-  padding:11px 11px 11px 0px;
+    background-color: #00000033;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.2;
+    padding: 11px 11px 11px 0px;
 }
 
 button {
-  padding: 5px 9px 5px 9px;
-  border-radius: 3px;
-  font-size: 18px;
-  border: 1px solid #0091CE;
-  background-color: #0091CE;
-  color: #fff;
-}body {
-    font-family: Arial, sans-serif;
+    padding: 5px 9px;
+    border-radius: 3px;
+    font-size: 18px;
+    border: 1px solid var(--primary-color);
+    background-color: var(--primary-color);
+    color: #fff;
+    margin: 5px;
+}
+
+body {
     margin: 0;
     padding: 20px;
     display: flex;
     flex-direction: column;
     height: 100vh;
 }
+
 .top-section {
     display: flex;
     flex-direction: row;
@@ -61,6 +71,7 @@ button {
         flex-direction: column;
     }
 }
+
 #tree-view {
     width: 50%;
     border-left: 1px solid #ccc;
@@ -75,6 +86,7 @@ button {
         border-top: 1px solid #ccc;
     }
 }
+
 #editor {
     width: 50%;
     padding: 10px;
@@ -86,6 +98,7 @@ button {
         width: 100%;
     }
 }
+
 #preview {
     height: 50vh;
     border-top: 1px solid #ccc;
@@ -94,73 +107,78 @@ button {
 }
 
 #json-preview-container {
-    height: calc(100% - 40px); /* Adjust based on header/button height */
+    height: calc(100% - 40px);
     overflow-y: auto;
 }
 
 #json-preview {
     max-height: 100%;
 }
+
 .tree-node {
     margin-left: 20px;
     cursor: pointer;
     user-select: none;
 }
+
 .tree-node::before {
     content: '▶';
     display: inline-block;
     margin-right: 5px;
     transition: transform 0.3s;
 }
+
 .tree-node.expanded::before {
     transform: rotate(90deg);
 }
+
 .tree-node.no-children::before {
     content: '';
 }
+
 .tree-node-content {
     display: inline-block;
 }
+
 .tree-node-children {
     display: none;
     margin-left: 20px;
 }
+
 .tree-node.expanded > .tree-node-children {
     display: block;
 }
+
 .error {
-    color: red;
+    color: var(--error-color);
 }
-button {
-    margin: 5px;
-}
+
 .json-key { color: #881391; }
 .json-string { color: #0B7500; }
 .json-number { color: #1A01CC; }
 .json-boolean { color: #FF0000; }
 .json-null { color: #808080; }
 .json-mark { color: #000000; }
+
 #schema-form {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
 }
+
 #schema-form > div {
     display: flex;
     align-items: center;
     margin-bottom: 10px;
 }
+
 #schema-form label {
-    width: 150px; /* Increase width for labels */
+    width: 150px;
     text-align: right;
     margin-right: 10px;
 }
+
 #schema-form input[type="text"],
 #schema-form select {
-    width: 300px; /* Increase width for inputs */
-}
-#schema-form input[type="text"],
-#schema-form select {
-    width: 250px; /* Ensure all inputs match this width */
-}
+    width: 250px;
 }

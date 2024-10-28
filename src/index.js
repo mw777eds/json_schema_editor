@@ -133,12 +133,20 @@ function selectNode(key, value, parent) {
 }
 
 function addOrEditNode(isAddOperation) {
-    const nodeKey = document.getElementById('title').value;
-    const description = document.getElementById('description').value;
+    const nodeKey = document.getElementById('title').value.trim();
     const type = document.getElementById('type').value;
     const feedback = document.getElementById('validation-feedback');
-    feedback.style.color = '#8B0000';
 
+    if (!validateNodeInput(nodeKey, type, feedback)) return;
+
+    const newNode = createNodeObject(nodeKey, type);
+    updateSchema(newNode, isAddOperation);
+    updateTreeView();
+    validateSchema();
+    resetForm();
+}
+
+function validateNodeInput(nodeKey, type, feedback) {
     let missingFields = [];
     if (!nodeKey) missingFields.push('Key');
     if (!type) missingFields.push('Type');
@@ -146,12 +154,14 @@ function addOrEditNode(isAddOperation) {
     if (missingFields.length > 0) {
         feedback.textContent = `${missingFields.join(' and ')} ${missingFields.length > 1 ? 'are' : 'is'} required.`;
         feedback.style.display = 'inline';
-        setTimeout(() => {
-            feedback.style.display = 'none';
-        }, 2000);
-        return;
+        setTimeout(() => feedback.style.display = 'none', 2000);
+        return false;
     }
+    return true;
+}
 
+function createNodeObject(nodeKey, type) {
+    const description = document.getElementById('description').value;
     const enumValues = document.getElementById('enum').value;
     const defaultValue = document.getElementById('default').value;
     const patternProperties = document.getElementById('patternProperties').value;
@@ -199,8 +209,12 @@ function addOrEditNode(isAddOperation) {
         newNode.items = state.currentNode.items ? { ...state.currentNode.items } : { type: 'string' };
     }
 
+    return newNode;
+}
+
+function updateSchema(newNode, isAddOperation) {
     let currentNode = state.currentNode;
-    const pathParts = nodeKey.split('.');
+    const pathParts = document.getElementById('title').value.split('.');
     const lastPart = pathParts.pop();
 
     for (const part of pathParts) {
@@ -243,10 +257,6 @@ function addOrEditNode(isAddOperation) {
             state.parentNode.required.splice(requiredIndex, 1);
         }
     }
-
-    updateTreeView();
-    validateSchema();
-    resetForm();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
