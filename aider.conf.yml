@@ -93,10 +93,10 @@ mini: true
 #architect: false
 
 ## Specify the model to use for commit messages and chat history summarization
-weak-model: claude-3-opus-20240229
+#weak-model: claude-3-opus-20240229
 
 ## Specify the model to use for editor tasks
-editor-model: gpt-4o-2024-08-06
+editor-model: claude-3-opus-20240229
 
 ## Specify the edit format for the editor model
 editor-edit-format: architect
