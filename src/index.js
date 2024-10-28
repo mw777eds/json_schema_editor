@@ -166,7 +166,7 @@ function createNodeObject(nodeKey, type) {
 
     let newNode = { description, type };
 
-    if (type === 'Boolean') {
+    if (type === 'boolean') {
         console.log('Default Value:', defaultValue); // Debugging line
         if (defaultValue.toLowerCase() === 'true' || defaultValue === '1') {
             newNode.default = true; // Set as boolean true
