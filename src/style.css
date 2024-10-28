@@ -145,16 +145,10 @@ button {
     flex-direction: column;
     align-items: flex-start;
 }
-#schema-form div {
+#schema-form > div {
     display: flex;
     align-items: center;
-    margin-bottom: 2px;
-}
-
-#button-container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+    margin-bottom: 10px;
 }
 #schema-form label {
     width: 150px; /* Increase width for labels */

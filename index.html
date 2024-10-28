@@ -10,8 +10,8 @@
 
 </head>
 <body>
-<div class="top-section">
-    <div id="editor">
+<main class="top-section">
+    <section id="editor">
         <h2>JSON Schema Editor <span id="apply-feedback" style="display: none; color: green; font-size: 14px; margin-left: 10px;">Schema successfully applied</span></h2>
         <button type="button" id="toggle-schema-options">Schema Options</button>
         <div id="schema-options" style="display: none;">
@@ -209,13 +209,13 @@
             </div>
             <div id="validation-feedback" style="display: inline-block; margin-left: 10px;"></div>
         </form>
-    </div>
-    <div id="tree-view">
+    </section>
+    <section id="tree-view">
         <h2>Schema Structure</h2>
         <div id="schema-tree"></div>
-    </div>
-</div>
-<div id="preview">
+    </section>
+</main>
+<section id="preview">
     <h2>Schema Preview <span id="copy-feedback" style="display: none; color: green; font-size: 14px; margin-left: 10px;">Copied</span></h2>
     <button id="format-btn">Format JSON</button>
     <button id="copy-btn">Copy JSON</button>
@@ -223,7 +223,7 @@
     <div id="json-preview-container">
         <div id="json-preview"></div>
     </div>
-</div>
+</section>
 
 <script type="module">
       import "./src/index.js";

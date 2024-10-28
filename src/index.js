@@ -137,8 +137,8 @@ function selectNode(key, value, parent) {
     patternPropertiesFields.style.display = selectedType === 'object' ? 'flex' : 'none';
 }
 
-function addOrEditNode(isAdd) {
-    const newKey = document.getElementById('title').value;
+function addOrEditNode(isAddOperation) {
+    const nodeKey = document.getElementById('title').value;
     const description = document.getElementById('description').value;
     const type = document.getElementById('type').value;
     const feedback = document.getElementById('validation-feedback');
@@ -212,7 +212,7 @@ function addOrEditNode(isAdd) {
         newNode.items = currentNode.items ? { ...currentNode.items } : { type: 'string' };
     }
 
-    let currentObj = schema;
+    let currentNode = schema;
     const pathParts = newKey.split('.');
     const lastPart = pathParts[pathParts.length - 1];
 
