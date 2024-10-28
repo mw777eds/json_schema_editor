@@ -209,6 +209,8 @@ function createNodeObject(nodeKey, type) {
     if (defaultValue) {
         newNode.default = type === 'number' ? parseFloat(defaultValue) : defaultValue;
     }
+    console.log('New Node Default(changed):', newNode.default); // Debugging line
+
     if (patternProperties) {
         const [pattern, propType] = patternProperties.split(/:(.+)/).map(v => v.trim());
         if (pattern && propType) {
