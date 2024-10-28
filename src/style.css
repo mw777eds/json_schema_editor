@@ -182,3 +182,8 @@ body {
 #schema-form select {
     width: 250px;
 }
+
+.pattern-wrapper {
+    display: flex;
+    align-items: center;
+}
