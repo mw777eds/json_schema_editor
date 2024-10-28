@@ -6,6 +6,10 @@ let schema = {
     "$schema": "https://json-schema.org/draft/2020-12/schema"
 };
 
+/* 
+ * Event listener for the "Apply Pasted Schema" button.
+ * This function retrieves the value from the textarea and applies the schema.
+ */
 document.getElementById('apply-pasted-schema').onclick = () => {
     const pastedSchema = document.getElementById('paste-schema').value;
     applySchemaFromString(pastedSchema);
@@ -23,6 +27,10 @@ let state = {
 
 let expandedNodes = new Set();
 
+/* 
+ * Updates the tree view to reflect the current schema structure.
+ * It clears the existing tree view and renders the schema nodes.
+ */
 function updateTreeView() {
     const treeView = document.getElementById('schema-tree');
     treeView.innerHTML = '';
@@ -31,6 +39,9 @@ function updateTreeView() {
     updatePreview();
 }
 
+/* 
+ * Restores the expanded state of nodes in the tree view based on previously expanded nodes.
+ */
 function restoreExpandedNodes() {
     expandedNodes.forEach(key => {
         const nodeElement = document.querySelector(`[data-key="${key}"]`);
@@ -40,6 +51,10 @@ function restoreExpandedNodes() {
     });
 }
 
+/* 
+ * Renders a node in the tree view.
+ * It creates the necessary HTML elements and sets up event listeners for interaction.
+ */
 function renderNode(node, parentElement, key, parent) {
     const nodeElement = document.createElement('div');
     nodeElement.classList.add('tree-node');
@@ -92,6 +107,10 @@ function renderNode(node, parentElement, key, parent) {
     }
 }
 
+/* 
+ * Selects a node in the tree view and populates the form with its details.
+ * It also updates the current operation (add/edit) and shows/hides relevant fields.
+ */
 function selectNode(key, value, parent) {
     state.selectedNode = { key, value, parent };
     state.parentNode = parent;
@@ -129,6 +148,10 @@ function selectNode(key, value, parent) {
     patternPropertiesFields.style.display = selectedType === 'object' ? 'flex' : 'none';
 }
 
+/* 
+ * Adds or edits a node in the schema based on the current form input.
+ * It validates the input and updates the schema accordingly.
+ */
 function addOrEditNode(isAddOperation) {
     const nodeKey = document.getElementById('title').value.trim();
     const type = document.getElementById('type').value;
@@ -143,6 +166,10 @@ function addOrEditNode(isAddOperation) {
     resetForm();
 }
 
+/* 
+ * Validates the input for a node to ensure required fields are filled.
+ * Displays feedback if any fields are missing.
+ */
 function validateNodeInput(nodeKey, type, feedback) {
     let missingFields = [];
     if (!nodeKey) missingFields.push('Key');
@@ -157,6 +184,10 @@ function validateNodeInput(nodeKey, type, feedback) {
     return true;
 }
 
+/* 
+ * Creates a new node object based on the form input.
+ * It handles different types and their specific properties.
+ */
 function createNodeObject(nodeKey, type) {
     const description = document.getElementById('description').value;
     const enumValues = document.getElementById('enum').value;
@@ -218,6 +249,10 @@ function createNodeObject(nodeKey, type) {
     return newNode;
 }
 
+/* 
+ * Updates the schema with the new node, either adding or editing it.
+ * It handles the path to the node based on the key provided.
+ */
 function updateSchema(newNode, isAddOperation) {
     let currentNode = state.currentNode;
     const pathParts = document.getElementById('title').value.split('.');
@@ -265,6 +300,9 @@ function updateSchema(newNode, isAddOperation) {
     }
 }
 
+/* 
+ * Initializes event listeners and sets up the form based on the selected type.
+ */
 document.addEventListener('DOMContentLoaded', () => {
     const typeSelect = document.getElementById('type');
     const numberFields = document.getElementById('number-fields');
@@ -288,6 +326,10 @@ document.addEventListener('DOMContentLoaded', () => {
     patternPropertiesFields.style.display = initialType === 'object' ? 'flex' : 'none';
 });
 
+/* 
+ * Event listeners for the Add, Edit, and Delete buttons.
+ * These functions handle the respective operations on the schema.
+ */
 document.getElementById('add-btn').onclick = () => {
     addOrEditNode(true);
 };
@@ -308,6 +350,10 @@ document.getElementById('delete-btn').onclick = () => {
     }
 };
 
+/* 
+ * Resets the form fields to their default state.
+ * Clears all input fields and hides the edit/delete buttons.
+ */
 function resetForm() {
     document.getElementById('title').value = '';
     document.getElementById('description').value = '';
@@ -335,6 +381,10 @@ function resetForm() {
     document.getElementById('current-operation').textContent = '';
 }
 
+/* 
+ * Validates the schema to ensure it is a valid JSON structure.
+ * Displays feedback based on the validation result.
+ */
 function validateSchema() {
     const feedback = document.getElementById('validation-feedback');
     try {
@@ -347,6 +397,10 @@ function validateSchema() {
     }
 }
 
+/* 
+ * Event listener for the Save button.
+ * It attempts to save the schema using FileMaker integration if available.
+ */
 document.getElementById('save-btn').onclick = () => {
     const schemaString = safeStringify(schema);
     if (typeof window.FileMaker !== 'undefined') {
@@ -360,11 +414,19 @@ document.getElementById('save-btn').onclick = () => {
     }
 };
 
+/* 
+ * Updates the JSON preview area to reflect the current schema.
+ * It formats the JSON based on the user's preference (formatted/compact).
+ */
 function updatePreview() {
     const previewElement = document.getElementById('json-preview');
     previewElement.innerHTML = '<pre>' + (state.isFormatted ? formatJSON(schema) : safeStringify(schema)) + '</pre>';
 }
 
+/* 
+ * Formats the JSON object into a string with indentation for better readability.
+ * It also applies syntax highlighting for different JSON types.
+ */
 function formatJSON(obj) {
     return JSON.stringify(obj, null, 2)
         .replace(/&/g, '&amp;')
@@ -386,12 +448,20 @@ function formatJSON(obj) {
         });
 }
 
+/* 
+ * Toggles the formatting of the JSON preview between formatted and compact.
+ * Updates the button text accordingly.
+ */
 document.getElementById('format-btn').onclick = () => {
     state.isFormatted = !state.isFormatted;
     document.getElementById('format-btn').textContent = state.isFormatted ? 'Compact JSON' : 'Format JSON';
     updatePreview();
 };
 
+/* 
+ * Copies the current schema to the clipboard.
+ * Displays feedback to the user upon successful copy.
+ */
 document.getElementById('copy-btn').onclick = async () => {
     const schemaString = JSON.stringify(schema);
     try {
@@ -406,11 +476,19 @@ document.getElementById('copy-btn').onclick = async () => {
     }
 };
 
+/* 
+ * Updates the schema ID when the input changes.
+ * This reflects the change in the preview.
+ */
 document.getElementById('schema-id').onchange = (e) => {
     schema.$id = e.target.value;
     updatePreview();
 };
 
+/* 
+ * Applies a pasted schema from the textarea.
+ * It parses the JSON and updates the schema if valid.
+ */
 function applySchemaFromString(pastedSchema) {
     const feedback = document.getElementById('paste-feedback');
     try {
@@ -437,11 +515,17 @@ function applySchemaFromString(pastedSchema) {
     }
 }
 
+/* 
+ * Toggles the visibility of the schema options section.
+ */
 document.getElementById('toggle-schema-options').onclick = () => {
     const schemaOptions = document.getElementById('schema-options');
     schemaOptions.style.display = schemaOptions.style.display === 'none' ? 'block' : 'none';
 };
 
+/* 
+ * Safely stringifies an object, handling cyclic references.
+ */
 function safeStringify(obj) {
     const seen = new WeakSet();
     return JSON.stringify(obj, (key, value) => {
