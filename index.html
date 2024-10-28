@@ -11,9 +11,9 @@
 <body>
 <main class="top-section">
     <section id="editor">
-        <h2>JSON Schema Editor <span id="apply-feedback" style="display: none; color: green; font-size: 14px; margin-left: 10px;">Schema successfully applied</span></h2>
+        <h2>JSON Schema Editor <span id="apply-feedback">Schema successfully applied</span></h2>
         <button type="button" id="toggle-schema-options" aria-label="Toggle schema options">Schema Options</button>
-        <div id="schema-options" style="display: none;">
+        <div id="schema-options">
             <div style="display: flex; align-items: center;">
                 <div style="width: 150px; text-align: right; margin-right: 10px;">
                     <label for="schema-version">$schema:</label>
@@ -44,7 +44,7 @@
             <div id="paste-feedback"></div>
             <hr>
         </div>
-        <div id="current-operation" style="margin-bottom: 10px; font-weight: bold;"></div>
+        <div id="current-operation"></div>
         <form id="schema-form" style="display: flex; flex-direction: column; align-items: flex-start;">
             <div style="display: flex; align-items: center;">
                 <div style="width: 100px; text-align: right; margin-right: 10px;">
@@ -209,12 +209,12 @@
                     </div>
                 </div>
             </div>
-            <div id="button-container" style="display: flex; align-items: center; margin-top: 10px; justify-content: flex-start;">
+            <div id="button-container">
                 <button type="button" id="add-btn">Add</button>
                 <button type="button" id="edit-btn" style="display:none;">Edit</button>
                 <button type="button" id="delete-btn" style="display:none;">Delete</button>
             </div>
-            <div id="validation-feedback" style="display: inline-block; margin-left: 10px;"></div>
+            <div id="validation-feedback"></div>
         </form>
     </section>
     <section id="tree-view">
@@ -223,7 +223,7 @@
     </section>
 </main>
 <section id="preview">
-    <h2>Schema Preview <span id="copy-feedback" style="display: none; color: green; font-size: 14px; margin-left: 10px;">Copied</span></h2>
+    <h2>Schema Preview <span id="copy-feedback">Copied</span></h2>
     <button id="format-btn">Format JSON</button>
     <button id="copy-btn">Copy JSON</button>
     <button id="save-btn">Save</button>

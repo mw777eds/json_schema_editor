@@ -187,3 +187,38 @@ body {
     display: flex;
     align-items: center;
 }
+
+#schema-options {
+    display: none;
+}
+
+#apply-feedback {
+    display: none;
+    color: green;
+    font-size: 14px;
+    margin-left: 10px;
+}
+
+#current-operation {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+#validation-feedback {
+    display: inline-block;
+    margin-left: 10px;
+}
+
+#copy-feedback {
+    display: none;
+    color: green;
+    font-size: 14px;
+    margin-left: 10px;
+}
+
+#button-container {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    justify-content: flex-start;
+}
