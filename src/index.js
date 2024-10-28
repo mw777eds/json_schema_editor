@@ -321,6 +321,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const arrayFields = document.getElementById('array-fields');
     const objectFields = document.getElementById('object-fields');
 
+    // Hide all fields initially
+    numberFields.style.display = 'none';
+    exclusiveNumberFields.style.display = 'none';
+    stringFields.style.display = 'none';
+    arrayFields.style.display = 'none';
+    objectFields.style.display = 'none';
+    patternPropertiesFields.style.display = 'none';
+    document.getElementById('pattern').style.display = 'none';
+    document.getElementById('pattern-wrapper').style.display = 'none';
+
     typeSelect.addEventListener('change', () => {
         const selectedType = typeSelect.value;
         numberFields.style.display = selectedType === 'number' ? 'flex' : 'none';
