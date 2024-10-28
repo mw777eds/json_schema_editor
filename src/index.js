@@ -7,13 +7,15 @@ let schema = {
     "required": [],
     "additionalProperties": false,
     "$schema": "https://json-schema.org/draft/2020-12/schema"
-}
+};
 
 document.getElementById('apply-pasted-schema').onclick = () => {
     const pastedSchema = document.getElementById('paste-schema').value;
     applySchemaFromString(pastedSchema);
-}
+};
+
 window.applySchemaFromString = applySchemaFromString;
+
 let state = {
     currentNode: schema,
     selectedNode: null,
@@ -44,10 +46,8 @@ function restoreExpandedNodes() {
 function renderNode(node, parentElement, key, parent) {
     const nodeElement = document.createElement('div');
     nodeElement.classList.add('tree-node');
-
     const contentElement = document.createElement('span');
     contentElement.classList.add('tree-node-content');
-
     contentElement.textContent = `${key}: ${node.type || typeof node}`;
     nodeElement.setAttribute('data-key', key);
 
@@ -85,9 +85,7 @@ function renderNode(node, parentElement, key, parent) {
         const childrenContainer = document.createElement('div');
         childrenContainer.classList.add('tree-node-children');
         nodeElement.appendChild(childrenContainer);
-
         renderNode(node.items, childrenContainer, 'items', node);
-
         nodeElement.onclick = (e) => {
             e.stopPropagation();
             nodeElement.classList.toggle('expanded');
@@ -106,14 +104,10 @@ function selectNode(key, value, parent) {
     document.getElementById('type').value = value.type || typeof value;
     document.getElementById('enum').value = value.enum ? value.enum.join(',') : '';
     document.getElementById('default').value = value.default || '';
-    if (value.patternProperties) {
-        document.getElementById('patternProperties').value = 
-            Object.entries(value.patternProperties)
-                  .map(([pattern, prop]) => `${pattern}:${prop.type}`)
-                  .join(',');
-    } else {
-        document.getElementById('patternProperties').value = '';
-    }
+    document.getElementById('patternProperties').value = value.patternProperties ? 
+        Object.entries(value.patternProperties)
+            .map(([pattern, prop]) => `${pattern}:${prop.type}`)
+            .join(',') : '';
 
     document.getElementById('required').checked = parent && parent.required && parent.required.includes(key);
     document.getElementById('add-btn').style.display = 'inline-block';
@@ -121,7 +115,6 @@ function selectNode(key, value, parent) {
     document.getElementById('delete-btn').style.display = 'inline-block';
     document.getElementById('current-operation').textContent = `${state.currentOperation === 'add' ? 'Adding' : 'Editing'}: ${key}`;
 
-    // Show/hide fields based on type
     const typeSelect = document.getElementById('type');
     const numberFields = document.getElementById('number-fields');
     const exclusiveNumberFields = document.getElementById('exclusive-number-fields');
@@ -144,10 +137,10 @@ function addOrEditNode(isAddOperation) {
     const description = document.getElementById('description').value;
     const type = document.getElementById('type').value;
     const feedback = document.getElementById('validation-feedback');
-    feedback.style.color = '#8B0000'; // Darker red
+    feedback.style.color = '#8B0000';
 
     let missingFields = [];
-    if (!newKey) missingFields.push('Key');
+    if (!nodeKey) missingFields.push('Key');
     if (!type) missingFields.push('Type');
 
     if (missingFields.length > 0) {
@@ -158,16 +151,13 @@ function addOrEditNode(isAddOperation) {
         }, 2000);
         return;
     }
+
     const enumValues = document.getElementById('enum').value;
     const defaultValue = document.getElementById('default').value;
     const patternProperties = document.getElementById('patternProperties').value;
     const isRequired = document.getElementById('required').checked;
 
-
-    let newNode = { 
-        description, 
-        type
-    };
+    let newNode = { description, type };
 
     if (type === 'number') {
         const minimum = document.getElementById('minimum').value;
@@ -191,11 +181,9 @@ function addOrEditNode(isAddOperation) {
         newNode.default = type === 'number' ? parseFloat(defaultValue) : defaultValue;
     }
     if (patternProperties) {
-        const [pattern, type] = patternProperties.split(/:(.+)/).map(v => v.trim());
-        if (pattern && type) {
-            newNode.patternProperties = {
-                [pattern]: { type }
-            };
+        const [pattern, propType] = patternProperties.split(/:(.+)/).map(v => v.trim());
+        if (pattern && propType) {
+            newNode.patternProperties = { [pattern]: { type: propType } };
         }
     }
 
@@ -207,29 +195,25 @@ function addOrEditNode(isAddOperation) {
         newNode.enum = enumValues.split(',').map(v => v.trim());
     }
 
-    if (type === 'object') {
-        newNode.properties = {};
-        newNode.required = [];
-    } else if (type === 'array') {
-        newNode.items = currentNode.items ? { ...currentNode.items } : { type: 'string' };
+    if (type === 'array') {
+        newNode.items = state.currentNode.items ? { ...state.currentNode.items } : { type: 'string' };
     }
 
     let currentNode = state.currentNode;
-    const pathParts = newKey.split('.');
-    const lastPart = pathParts[pathParts.length - 1];
+    const pathParts = nodeKey.split('.');
+    const lastPart = pathParts.pop();
 
-    for (let i = 0; i < pathParts.length - 1; i++) {
-        if (!currentObj.properties) {
-            currentObj.properties = {};
+    for (const part of pathParts) {
+        if (!currentNode.properties) {
+            currentNode.properties = {};
         }
-        if (!currentObj.properties[pathParts[i]]) {
-            currentObj.properties[pathParts[i]] = { type: 'object', properties: {}, additionalProperties: false };
+        if (!currentNode.properties[part]) {
+            currentNode.properties[part] = { type: 'object', properties: {}, additionalProperties: false };
         }
-        currentObj = currentObj.properties[pathParts[i]];
+        currentNode = currentNode.properties[part];
     }
 
     if (!isAddOperation && state.selectedNode) {
-        // Remove the old node from the correct parent
         if (state.parentNode && state.parentNode.properties) {
             delete state.parentNode.properties[state.selectedNode.key];
             const requiredIndex = state.parentNode.required ? state.parentNode.required.indexOf(state.selectedNode.key) : -1;
@@ -239,16 +223,14 @@ function addOrEditNode(isAddOperation) {
         }
     }
 
-    // Ensure state.parentNode is correctly set
     if (!state.parentNode) {
         state.parentNode = currentNode;
     }
 
-    // Add the new node
     if (!state.parentNode.properties) {
         state.parentNode.properties = {};
     }
-    state.parentNode.properties[lastPart] = nodeValue;
+    state.parentNode.properties[lastPart] = newNode;
 
     if (isRequired) {
         if (!state.parentNode.required) state.parentNode.required = [];
@@ -283,12 +265,11 @@ document.addEventListener('DOMContentLoaded', () => {
         stringFields.style.display = selectedType === 'string' ? 'flex' : 'none';
         arrayFields.style.display = selectedType === 'array' ? 'flex' : 'none';
         objectFields.style.display = selectedType === 'object' ? 'flex' : 'none';
-        patternPropertiesFields.style.display = selectedType === 'string' ? 'flex' : 'none';
+        patternPropertiesFields.style.display = selectedType === 'object' ? 'flex' : 'none';
     });
-    
-    // Trigger the change event initially to set correct initial state
+
     const initialType = typeSelect.value;
-    patternPropertiesFields.style.display = initialType === 'string' ? 'flex' : 'none';
+    patternPropertiesFields.style.display = initialType === 'object' ? 'flex' : 'none';
 });
 
 document.getElementById('add-btn').onclick = () => addOrEditNode(true);
@@ -374,20 +355,16 @@ function formatJSON(obj) {
         .replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
             let cls = 'json-number';
             if (/^"/.test(match)) {
-                if (/:$/.test(match)) {
-                    cls = 'json-key';
-                } else {
-                    cls = 'json-string';
-                }
+                cls = /:$/.test(match) ? 'json-key' : 'json-string';
             } else if (/true|false/.test(match)) {
                 cls = 'json-boolean';
             } else if (/null/.test(match)) {
                 cls = 'json-null';
             }
-            return '<span class="' + cls + '">' + match + '</span>';
+            return `<span class="${cls}">${match}</span>`;
         })
         .replace(/\{|\}|\[|\]|,|:/g, function (match) {
-            return '<span class="json-mark">' + match + '</span>';
+            return `<span class="json-mark">${match}</span>`;
         });
 }
 
@@ -430,11 +407,7 @@ function applySchemaFromString(pastedSchema) {
             applyFeedback.style.display = 'inline';
             setTimeout(() => {
                 applyFeedback.style.display = 'none';
-                const schemaOptions = document.getElementById('schema-options');
-                schemaOptions.style.display = 'none';
-            }, 2000);
-            setTimeout(() => {
-                feedback.style.display = 'none';
+                document.getElementById('schema-options').style.display = 'none';
             }, 2000);
             feedback.classList.remove('error');
             document.getElementById('paste-schema').value = '';
@@ -445,7 +418,7 @@ function applySchemaFromString(pastedSchema) {
         feedback.textContent = `Error: ${error.message}`;
         feedback.classList.add('error');
     }
-};
+}
 
 document.getElementById('toggle-schema-options').onclick = () => {
     const schemaOptions = document.getElementById('schema-options');
