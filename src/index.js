@@ -99,7 +99,7 @@ function selectNode(key, value, parent) {
     selectedNode = { key, value, parent };
     parentNode = parent;
     currentNode = value;
-    document.getElementById('title').value = newKey;
+    document.getElementById('title').value = key;
     document.getElementById('description').value = value.description || '';
     document.getElementById('type').value = value.type || typeof value;
     document.getElementById('enum').value = value.enum ? value.enum.join(',') : '';
