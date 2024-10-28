@@ -1,6 +1,3 @@
-const rootTitle = "parameters";
-const rootDescription = "parameters for the current tool";
-
 let schema = {
     "type": "object",
     "properties": {},
