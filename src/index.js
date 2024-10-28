@@ -237,6 +237,11 @@ function createNodeObject(nodeKey, type) {
     if (type === 'object') {
         newNode.properties = {};
         newNode.required = [];
+        const minProperties = document.getElementById('minProperties').value;
+        const maxProperties = document.getElementById('maxProperties').value;
+
+        if (minProperties) newNode.minProperties = parseInt(minProperties, 10);
+        if (maxProperties) newNode.maxProperties = parseInt(maxProperties, 10);
     }
     if (enumValues) {
         newNode.enum = enumValues.split(',').map(v => v.trim());
