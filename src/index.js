@@ -172,6 +172,8 @@ function createNodeObject(nodeKey, type) {
 
     let newNode = { description, type };
 
+    console.log('Node Type:', type); // Debugging line to check the type
+
     if (type === 'boolean') {
         console.log('Default Value:', defaultValue); // Debugging line
         if (defaultValue.toLowerCase() === 'true' || defaultValue === '1') {
