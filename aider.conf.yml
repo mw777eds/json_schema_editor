@@ -39,7 +39,7 @@
 #4o: false
 
 ## Use gpt-4o-mini model for the main chat
-#mini: false
+mini: true
 
 ## Use gpt-4-1106-preview model for the main chat
 #4-turbo: false
@@ -92,14 +92,14 @@
 ## Use architect edit format for the main chat
 #architect: false
 
-## Specify the model to use for commit messages and chat history summarization (default depends on --model)
-#weak-model: xxx
+## Specify the model to use for commit messages and chat history summarization
+weak-model: claude-3-opus-20240229
 
-## Specify the model to use for editor tasks (default depends on --model)
-#editor-model: xxx
+## Specify the model to use for editor tasks
+editor-model: gpt-4o-2024-08-06
 
-## Specify the edit format for the editor model (default: depends on editor model)
-#editor-edit-format: xxx
+## Specify the edit format for the editor model
+editor-edit-format: architect
 
 ## Only work with models that have meta-data available (default: True)
 #show-model-warnings: true
