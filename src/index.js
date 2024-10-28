@@ -138,6 +138,7 @@ function selectNode(key, value, parent) {
     const stringFields = document.getElementById('string-fields');
     const arrayFields = document.getElementById('array-fields');
     const objectFields = document.getElementById('object-fields');
+    const patternFields = document.getElementById('pattern-fields'); // New constant
 
     const selectedType = value.type || typeof value;
 
@@ -149,7 +150,7 @@ function selectNode(key, value, parent) {
         arrayFields,
         objectFields,
         patternPropertiesFields,
-        document.getElementById('pattern-fields') // Updated to new id
+        patternFields // Updated to use new constant
     ];
 
     allFields.forEach(field => field.style.display = 'none'); // Hide all fields
@@ -160,7 +161,7 @@ function selectNode(key, value, parent) {
         exclusiveNumberFields.style.display = 'flex';
     } else if (selectedType === 'string') {
         stringFields.style.display = 'flex';
-        document.getElementById('pattern-fields').style.display = 'flex'; // Updated to new id
+        patternFields.style.display = 'flex'; // Updated to use new constant
     } else if (selectedType === 'array') {
         arrayFields.style.display = 'flex';
     } else if (selectedType === 'object') {
@@ -339,6 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const stringFields = document.getElementById('string-fields');
     const arrayFields = document.getElementById('array-fields');
     const objectFields = document.getElementById('object-fields');
+    const patternFields = document.getElementById('pattern-fields'); // New constant
 
     // Hide all fields initially
     numberFields.style.display = 'none';
@@ -347,7 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
     arrayFields.style.display = 'none';
     objectFields.style.display = 'none';
     patternPropertiesFields.style.display = 'none';
-    document.getElementById('pattern-fields').style.display = 'none'; // Updated to new id
+    patternFields.style.display = 'none'; // Updated to use new constant
 
     typeSelect.addEventListener('change', () => {
         const selectedType = typeSelect.value;
@@ -357,12 +359,12 @@ document.addEventListener('DOMContentLoaded', () => {
         arrayFields.style.display = selectedType === 'array' ? 'flex' : 'none';
         objectFields.style.display = selectedType === 'object' ? 'flex' : 'none';
         patternPropertiesFields.style.display = selectedType === 'object' ? 'flex' : 'none';
-        document.getElementById('pattern-fields').style.display = selectedType === 'string' ? 'flex' : 'none'; // Updated to new id
+        patternFields.style.display = selectedType === 'string' ? 'flex' : 'none'; // Updated to use new constant
     });
 
     const initialType = typeSelect.value;
     patternPropertiesFields.style.display = initialType === 'object' ? 'flex' : 'none';
-    document.getElementById('pattern-fields').style.display = initialType === 'string' ? 'flex' : 'none'; // Updated to new id
+    patternFields.style.display = initialType === 'string' ? 'flex' : 'none'; // Updated to use new constant
 });
 
 /* 
