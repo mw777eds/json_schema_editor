@@ -165,9 +165,19 @@ function createNodeObject(nodeKey, type) {
     const enumValues = document.getElementById('enum').value;
     const defaultValue = document.getElementById('default').value;
     const patternProperties = document.getElementById('patternProperties').value;
-    const isRequired = document.getElementById('required').checked; // Define isRequired here
+    const isRequired = document.getElementById('required').checked;
 
     let newNode = { description, type };
+
+    if (type === 'boolean') {
+        if (defaultValue.toLowerCase() === 'true') {
+            newNode.default = true;
+        } else if (defaultValue.toLowerCase() === 'false') {
+            newNode.default = false;
+        } else {
+            throw new Error('Default value for boolean must be true or false.');
+        }
+    }
 
     if (type === 'number') {
         const minimum = document.getElementById('minimum').value;
@@ -246,7 +256,7 @@ function updateSchema(newNode, isAddOperation) {
     }
     state.parentNode.properties[lastPart] = newNode;
 
-    if (newNode.required && newNode.required.includes(lastPart)) { // Use isRequired here
+    if (newNode.required && newNode.required.includes(lastPart)) {
         if (!state.parentNode.required) state.parentNode.required = [];
         if (!state.parentNode.required.includes(lastPart)) {
             state.parentNode.required.push(lastPart);
