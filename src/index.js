@@ -140,14 +140,33 @@ function selectNode(key, value, parent) {
     const objectFields = document.getElementById('object-fields');
 
     const selectedType = value.type || typeof value;
-    numberFields.style.display = selectedType === 'number' ? 'flex' : 'none';
-    exclusiveNumberFields.style.display = selectedType === 'number' ? 'flex' : 'none';
-    stringFields.style.display = selectedType === 'string' ? 'flex' : 'none';
-    arrayFields.style.display = selectedType === 'array' ? 'flex' : 'none';
-    objectFields.style.display = selectedType === 'object' ? 'flex' : 'none';
-    patternPropertiesFields.style.display = selectedType === 'object' ? 'flex' : 'none';
-    document.getElementById('pattern').style.display = selectedType === 'string' ? 'flex' : 'none';
-    document.getElementById('pattern-wrapper').style.display = selectedType === 'string' ? 'flex' : 'none'; // Show pattern field
+
+    // Hide all fields initially
+    const allFields = [
+        numberFields,
+        exclusiveNumberFields,
+        stringFields,
+        arrayFields,
+        objectFields,
+        patternPropertiesFields,
+        document.getElementById('pattern-wrapper') // Include the wrapper
+    ];
+
+    allFields.forEach(field => field.style.display = 'none'); // Hide all fields
+
+    // Show relevant fields based on selected type
+    if (selectedType === 'number') {
+        numberFields.style.display = 'flex';
+        exclusiveNumberFields.style.display = 'flex';
+    } else if (selectedType === 'string') {
+        stringFields.style.display = 'flex';
+        document.getElementById('pattern-wrapper').style.display = 'flex'; // Show pattern wrapper
+    } else if (selectedType === 'array') {
+        arrayFields.style.display = 'flex';
+    } else if (selectedType === 'object') {
+        objectFields.style.display = 'flex';
+        patternPropertiesFields.style.display = 'flex';
+    }
 }
 
 /* 
@@ -328,7 +347,6 @@ document.addEventListener('DOMContentLoaded', () => {
     arrayFields.style.display = 'none';
     objectFields.style.display = 'none';
     patternPropertiesFields.style.display = 'none';
-    document.getElementById('pattern').style.display = 'none';
     document.getElementById('pattern-wrapper').style.display = 'none';
 
     typeSelect.addEventListener('change', () => {
@@ -339,14 +357,12 @@ document.addEventListener('DOMContentLoaded', () => {
         arrayFields.style.display = selectedType === 'array' ? 'flex' : 'none';
         objectFields.style.display = selectedType === 'object' ? 'flex' : 'none';
         patternPropertiesFields.style.display = selectedType === 'object' ? 'flex' : 'none';
-        document.getElementById('pattern').style.display = selectedType === 'string' ? 'flex' : 'none';
-        document.getElementById('pattern-wrapper').style.display = selectedType === 'string' ? 'flex' : 'none'; // Show pattern field
+        document.getElementById('pattern-wrapper').style.display = selectedType === 'string' ? 'flex' : 'none'; // Show pattern wrapper
     });
 
     const initialType = typeSelect.value;
     patternPropertiesFields.style.display = initialType === 'object' ? 'flex' : 'none';
-    document.getElementById('pattern').style.display = initialType === 'string' ? 'flex' : 'none';
-    document.getElementById('pattern-wrapper').style.display = initialType === 'string' ? 'flex' : 'none'; // Show pattern field
+    document.getElementById('pattern-wrapper').style.display = initialType === 'string' ? 'flex' : 'none'; // Show pattern wrapper
 });
 
 /* 
