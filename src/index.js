@@ -138,11 +138,11 @@ function selectNode(key, value, parent) {
     const stringFields = document.getElementById('string-fields');
     const arrayFields = document.getElementById('array-fields');
     const objectFields = document.getElementById('object-fields');
-    const patternFields = document.getElementById('pattern-fields'); // New constant
+    const patternFields = document.getElementById('pattern-fields');
 
     const selectedType = value.type || typeof value;
 
-    // Hide all fields initially
+    /* Hide all fields initially */
     const allFields = [
         numberFields,
         exclusiveNumberFields,
@@ -150,18 +150,18 @@ function selectNode(key, value, parent) {
         arrayFields,
         objectFields,
         patternPropertiesFields,
-        patternFields // Updated to use new constant
+        patternFields
     ];
 
-    allFields.forEach(field => field.style.display = 'none'); // Hide all fields
+    allFields.forEach(field => field.style.display = 'none');
 
-    // Show relevant fields based on selected type
+    /* Show relevant fields based on selected type */
     if (selectedType === 'number') {
         numberFields.style.display = 'flex';
         exclusiveNumberFields.style.display = 'flex';
     } else if (selectedType === 'string') {
         stringFields.style.display = 'flex';
-        patternFields.style.display = 'flex'; // Updated to use new constant
+        patternFields.style.display = 'flex';
     } else if (selectedType === 'array') {
         arrayFields.style.display = 'flex';
     } else if (selectedType === 'object') {
@@ -340,16 +340,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const stringFields = document.getElementById('string-fields');
     const arrayFields = document.getElementById('array-fields');
     const objectFields = document.getElementById('object-fields');
-    const patternFields = document.getElementById('pattern-fields'); // New constant
+    const patternFields = document.getElementById('pattern-fields');
 
-    // Hide all fields initially
+    /* Hide all fields initially */
     numberFields.style.display = 'none';
     exclusiveNumberFields.style.display = 'none';
     stringFields.style.display = 'none';
     arrayFields.style.display = 'none';
     objectFields.style.display = 'none';
     patternPropertiesFields.style.display = 'none';
-    patternFields.style.display = 'none'; // Updated to use new constant
+    patternFields.style.display = 'none';
 
     typeSelect.addEventListener('change', () => {
         const selectedType = typeSelect.value;
@@ -359,12 +359,12 @@ document.addEventListener('DOMContentLoaded', () => {
         arrayFields.style.display = selectedType === 'array' ? 'flex' : 'none';
         objectFields.style.display = selectedType === 'object' ? 'flex' : 'none';
         patternPropertiesFields.style.display = selectedType === 'object' ? 'flex' : 'none';
-        patternFields.style.display = selectedType === 'string' ? 'flex' : 'none'; // Updated to use new constant
+        patternFields.style.display = selectedType === 'string' ? 'flex' : 'none';
     });
 
     const initialType = typeSelect.value;
     patternPropertiesFields.style.display = initialType === 'object' ? 'flex' : 'none';
-    patternFields.style.display = initialType === 'string' ? 'flex' : 'none'; // Updated to use new constant
+    patternFields.style.display = initialType === 'string' ? 'flex' : 'none';
 });
 
 /* 
