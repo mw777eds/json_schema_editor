@@ -222,3 +222,23 @@ body {
     margin-top: 10px;
     justify-content: flex-start;
 }
+
+#schema-form div {
+    display: flex;
+    align-items: center;
+}
+
+#schema-form div label {
+    width: 100px;
+    text-align: right;
+    margin-right: 10px;
+}
+
+#number-fields,
+#exclusive-number-fields,
+#string-fields,
+#array-fields,
+#object-fields {
+    display: none;
+    flex-direction: column;
+}

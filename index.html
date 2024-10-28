@@ -14,199 +14,115 @@
         <h2>JSON Schema Editor <span id="apply-feedback">Schema successfully applied</span></h2>
         <button type="button" id="toggle-schema-options" aria-label="Toggle schema options">Schema Options</button>
         <div id="schema-options">
-            <div style="display: flex; align-items: center;">
-                <div style="width: 150px; text-align: right; margin-right: 10px;">
-                    <label for="schema-version">$schema:</label>
-                </div>
-                <div>
-                    <input type="text" id="schema-version" value="https://json-schema.org/draft/2020-12/schema" autocorrect="off">
-                </div>
+            <div>
+                <label for="schema-version">$schema:</label>
+                <input type="text" id="schema-version" value="https://json-schema.org/draft/2020-12/schema" autocorrect="off">
             </div>
-            <div style="display: flex; align-items: center;">
-                <div style="width: 150px; text-align: right; margin-right: 10px;">
-                    <label for="schema-id">$id:</label>
-                </div>
-                <div>
-                    <input type="text" id="schema-id" value="https://example.com/schema.json" autocorrect="off">
-                </div>
+            <div>
+                <label for="schema-id">$id:</label>
+                <input type="text" id="schema-id" value="https://example.com/schema.json" autocorrect="off">
             </div>
-            <div style="display: flex; align-items: center;">
-                <div style="width: 150px; text-align: right; margin-right: 10px;">
-                    <label for="paste-schema">Schema:</label>
-                </div>
-                <div>
-                    <textarea id="paste-schema" placeholder="Paste your JSON schema here" autocorrect="off"></textarea>
-                </div>
+            <div>
+                <label for="paste-schema">Schema:</label>
+                <textarea id="paste-schema" placeholder="Paste your JSON schema here" autocorrect="off"></textarea>
             </div>
-            <div style="display: flex; align-items: center;">
+            <div>
                 <button id="apply-pasted-schema">Apply Pasted Schema</button>
             </div>
             <div id="paste-feedback"></div>
             <hr>
         </div>
         <div id="current-operation"></div>
-        <form id="schema-form" style="display: flex; flex-direction: column; align-items: flex-start;">
-            <div style="display: flex; align-items: center;">
-                <div style="width: 100px; text-align: right; margin-right: 10px;">
-                    <label for="title">Key:</label>
+        <form id="schema-form">
+            <div>
+                <label for="title">Key:</label>
+                <input type="text" id="title" required autocorrect="off">
+            </div>
+            <div>
+                <label for="description">Description:</label>
+                <input type="text" id="description" autocorrect="off">
+            </div>
+            <div>
+                <label for="type">Type:</label>
+                <select id="type">
+                    <option value="" disabled selected>Select a type</option>
+                    <option value="string">String</option>
+                    <option value="number">Number</option>
+                    <option value="boolean">Boolean</option>
+                    <option value="object">Object</option>
+                    <option value="array">Array</option>
+                </select>
+            </div>
+            <div>
+                <label for="default">Default:</label>
+                <input type="text" id="default" autocorrect="off">
+            </div>
+            <div class="pattern-wrapper" id="pattern-wrapper">
+                <label for="pattern">Pattern:</label>
+                <input type="text" id="pattern" placeholder="Regex Pattern" autocorrect="off">
+            </div>
+            <div id="pattern-properties-fields">
+                <div>
+                    <label for="patternProperties">Pattern:</label>
+                    <input type="text" id="patternProperties" placeholder="Regex Pattern" autocorrect="off">
+                </div>
+            </div>
+            <div>
+                <label for="enum">Enum:</label>
+                <input type="text" id="enum" placeholder="Comma-separated values" autocorrect="off">
+            </div>
+            <div>
+                <label for="required">Required:</label>
+                <input type="checkbox" id="required" tabindex="0">
+            </div>
+            <div id="number-fields">
+                <div>
+                    <label for="minimum">Minimum:</label>
+                    <input type="number" id="minimum" step="any">
                 </div>
                 <div>
-                    <input type="text" id="title" required autocorrect="off">
+                    <label for="maximum">Maximum:</label>
+                    <input type="number" id="maximum" step="any">
                 </div>
             </div>
-            <div style="display: flex; align-items: center;">
-                <div style="width: 100px; text-align: right; margin-right: 10px;">
-                    <label for="description">Description:</label>
+            <div id="exclusive-number-fields">
+                <div>
+                    <label for="exclusiveMinimum">Excl. Min:</label>
+                    <input type="number" id="exclusiveMinimum" step="any">
                 </div>
                 <div>
-                    <input type="text" id="description" autocorrect="off">
+                    <label for="exclusiveMaximum">Excl. Max:</label>
+                    <input type="number" id="exclusiveMaximum" step="any">
                 </div>
             </div>
-            <div style="display: flex; align-items: center;">
-                <div style="width: 100px; text-align: right; margin-right: 10px;">
-                    <label for="type">Type:</label>
+            <div id="string-fields">
+                <div>
+                    <label for="minLength">Min Length:</label>
+                    <input type="number" id="minLength" step="1">
                 </div>
                 <div>
-                    <select id="type">
-                        <option value="" disabled selected>Select a type</option>
-                        <option value="string">String</option>
-                        <option value="number">Number</option>
-                        <option value="boolean">Boolean</option>
-                        <option value="object">Object</option>
-                        <option value="array">Array</option>
-                    </select>
+                    <label for="maxLength">Max Length:</label>
+                    <input type="number" id="maxLength" step="1">
                 </div>
             </div>
-            <div style="display: flex; align-items: center;">
-                <div style="width: 100px; text-align: right; margin-right: 10px;">
-                    <label for="default">Default:</label>
+            <div id="array-fields">
+                <div>
+                    <label for="minItems">Min Items:</label>
+                    <input type="number" id="minItems" step="1">
                 </div>
                 <div>
-                    <input type="text" id="default" autocorrect="off">
+                    <label for="maxItems">Max Items:</label>
+                    <input type="number" id="maxItems" step="1">
                 </div>
             </div>
-            <div class="pattern-wrapper" id="pattern-wrapper" style="display: none;">
-                <div style="width: 100px; text-align: right; margin-right: 10px;">
-                    <label for="pattern">Pattern:</label>
+            <div id="object-fields">
+                <div>
+                    <label for="minProperties">Min Prop.:</label>
+                    <input type="number" id="minProperties" step="1">
                 </div>
                 <div>
-                    <input type="text" id="pattern" placeholder="Regex Pattern" autocorrect="off">
-                </div>
-            </div>
-            <div id="pattern-properties-fields" style="display: none; flex-direction: column;">
-                <div style="display: flex; align-items: center;">
-                    <div style="width: 100px; text-align: right; margin-right: 10px;">
-                        <label for="patternProperties">Pattern:</label>
-                    </div>
-                    <div>
-                        <input type="text" id="patternProperties" placeholder="Regex Pattern" autocorrect="off">
-                    </div>
-                </div>
-            </div>
-            <div style="display: flex; align-items: center;">
-                <div style="width: 100px; text-align: right; margin-right: 10px;">
-                    <label for="enum">Enum:</label>
-                </div>
-                <div>
-                    <input type="text" id="enum" placeholder="Comma-separated values" autocorrect="off">
-                </div>
-            </div>
-            <div style="display: flex; align-items: center;">
-                <div style="width: 100px; text-align: right; margin-right: 10px;">
-                    <label for="required">Required:</label>
-                </div>
-                <div>
-                    <input type="checkbox" id="required" tabindex="0">
-                </div>
-            </div>
-            <div id="number-fields" style="display: none; flex-direction: column;">
-                <div style="display: flex; align-items: center;">
-                    <div style="width: 100px; text-align: right; margin-right: 10px;">
-                        <label for="minimum">Minimum:</label>
-                    </div>
-                    <div>
-                        <input type="number" id="minimum" step="any">
-                    </div>
-                </div>
-                <div style="display: flex; align-items: center;">
-                    <div style="width: 100px; text-align: right; margin-right: 10px;">
-                        <label for="maximum">Maximum:</label>
-                    </div>
-                    <div>
-                        <input type="number" id="maximum" step="any">
-                    </div>
-                </div>
-            </div>
-            <div id="exclusive-number-fields" style="display: none; flex-direction: column;">
-                <div style="display: flex; align-items: center;">
-                    <div style="width: 100px; text-align: right; margin-right: 10px;">
-                        <label for="exclusiveMinimum">Excl. Min:</label>
-                    </div>
-                    <div>
-                        <input type="number" id="exclusiveMinimum" step="any">
-                    </div>
-                </div>
-                <div style="display: flex; align-items: center;">
-                    <div style="width: 100px; text-align: right; margin-right: 10px;">
-                        <label for="exclusiveMaximum">Excl. Max:</label>
-                    </div>
-                    <div>
-                        <input type="number" id="exclusiveMaximum" step="any">
-                    </div>
-                </div>
-            </div>
-            <div id="string-fields" style="display: none; flex-direction: column;">
-                <div style="display: flex; align-items: center;">
-                    <div style="width: 100px; text-align: right; margin-right: 10px;">
-                        <label for="minLength">Min Length:</label>
-                    </div>
-                    <div>
-                        <input type="number" id="minLength" step="1">
-                    </div>
-                </div>
-                <div style="display: flex; align-items: center;">
-                    <div style="width: 100px; text-align: right; margin-right: 10px;">
-                        <label for="maxLength">Max Length:</label>
-                    </div>
-                    <div>
-                        <input type="number" id="maxLength" step="1">
-                    </div>
-                </div>
-            </div>
-            <div id="array-fields" style="display: none; flex-direction: column;">
-                <div style="display: flex; align-items: center;">
-                    <div style="width: 100px; text-align: right; margin-right: 10px;">
-                        <label for="minItems">Min Items:</label>
-                    </div>
-                    <div>
-                        <input type="number" id="minItems" step="1">
-                    </div>
-                </div>
-                <div style="display: flex; align-items: center;">
-                    <div style="width: 100px; text-align: right; margin-right: 10px;">
-                        <label for="maxItems">Max Items:</label>
-                    </div>
-                    <div>
-                        <input type="number" id="maxItems" step="1">
-                    </div>
-                </div>
-            </div>
-            <div id="object-fields" style="display: none; flex-direction: column;">
-                <div style="display: flex; align-items: center;">
-                    <div style="width: 100px; text-align: right; margin-right: 10px;">
-                        <label for="minProperties">Min Prop.:</label>
-                    </div>
-                    <div>
-                        <input type="number" id="minProperties" step="1">
-                    </div>
-                </div>
-                <div style="display: flex; align-items: center;">
-                    <div style="width: 100px; text-align: right; margin-right: 10px;">
-                        <label for="maxProperties">Max Prop.:</label>
-                    </div>
-                    <div>
-                        <input type="number" id="maxProperties" step="1">
-                    </div>
+                    <label for="maxProperties">Max Prop.:</label>
+                    <input type="number" id="maxProperties" step="1">
                 </div>
             </div>
             <div id="button-container">
