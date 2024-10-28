@@ -170,12 +170,12 @@ function createNodeObject(nodeKey, type) {
     let newNode = { description, type };
 
     if (type === 'boolean') {
-        if (defaultValue.toLowerCase() === 'true') {
-            newNode.default = true;
-        } else if (defaultValue.toLowerCase() === 'false') {
-            newNode.default = false;
+        if (defaultValue.toLowerCase() === 'true' || defaultValue === '1') {
+            newNode.default = true; // Set as boolean true
+        } else if (defaultValue.toLowerCase() === 'false' || defaultValue === '0') {
+            newNode.default = false; // Set as boolean false
         } else {
-            throw new Error('Default value for boolean must be true or false.');
+            throw new Error('Default value for boolean must be true, false, 1, or 0.');
         }
     }
 
