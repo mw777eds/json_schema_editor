@@ -186,6 +186,8 @@ function createNodeObject(nodeKey, type) {
             console.error('Invalid default value for boolean:', defaultValue); // Debugging line
             throw new Error('Default value for boolean must be true, false, 1, or 0.');
         }
+    } else if (defaultValue) {
+        newNode.default = type === 'number' ? parseFloat(defaultValue) : defaultValue;
     }
 
     if (type === 'number') {
@@ -205,11 +207,6 @@ function createNodeObject(nodeKey, type) {
         if (minLength) newNode.minLength = parseInt(minLength, 10);
         if (maxLength) newNode.maxLength = parseInt(maxLength, 10);
     }
-
-    if (defaultValue) {
-        newNode.default = type === 'number' ? parseFloat(defaultValue) : defaultValue;
-    }
-    console.log('New Node Default(changed):', newNode.default); // Debugging line
 
     if (patternProperties) {
         const [pattern, propType] = patternProperties.split(/:(.+)/).map(v => v.trim());
