@@ -139,6 +139,7 @@ function selectNode(key, value, parent) {
     const arrayFields = document.getElementById('array-fields');
     const objectFields = document.getElementById('object-fields');
     const patternFields = document.getElementById('pattern-fields');
+    const enumFields = document.getElementById('enum-fields');
 
     const selectedType = value.type || typeof value;
 
@@ -150,7 +151,8 @@ function selectNode(key, value, parent) {
         arrayFields,
         objectFields,
         patternPropertiesFields,
-        patternFields
+        patternFields,
+        enumFields
     ];
 
     allFields.forEach(field => field.style.display = 'none');
@@ -159,9 +161,11 @@ function selectNode(key, value, parent) {
     if (selectedType === 'number') {
         numberFields.style.display = 'flex';
         exclusiveNumberFields.style.display = 'flex';
+        enumFields.style.display = 'flex';
     } else if (selectedType === 'string') {
         stringFields.style.display = 'flex';
         patternFields.style.display = 'flex';
+        enumFields.style.display = 'flex';
     } else if (selectedType === 'array') {
         arrayFields.style.display = 'flex';
     } else if (selectedType === 'object') {
@@ -341,6 +345,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const arrayFields = document.getElementById('array-fields');
     const objectFields = document.getElementById('object-fields');
     const patternFields = document.getElementById('pattern-fields');
+    const enumFields = document.getElementById('enum-fields');
 
     /* Hide all fields initially */
     numberFields.style.display = 'none';
@@ -350,6 +355,7 @@ document.addEventListener('DOMContentLoaded', () => {
     objectFields.style.display = 'none';
     patternPropertiesFields.style.display = 'none';
     patternFields.style.display = 'none';
+    enumFields.style.display = 'none';
 
     typeSelect.addEventListener('change', () => {
         const selectedType = typeSelect.value;
@@ -360,11 +366,13 @@ document.addEventListener('DOMContentLoaded', () => {
         objectFields.style.display = selectedType === 'object' ? 'flex' : 'none';
         patternPropertiesFields.style.display = selectedType === 'object' ? 'flex' : 'none';
         patternFields.style.display = selectedType === 'string' ? 'flex' : 'none';
+        enumFields.style.display = (selectedType === 'string' || selectedType === 'number') ? 'flex' : 'none';
     });
 
     const initialType = typeSelect.value;
     patternPropertiesFields.style.display = initialType === 'object' ? 'flex' : 'none';
     patternFields.style.display = initialType === 'string' ? 'flex' : 'none';
+    enumFields.style.display = (initialType === 'string' || initialType === 'number') ? 'flex' : 'none';
 });
 
 /* 
