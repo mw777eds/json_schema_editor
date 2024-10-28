@@ -169,7 +169,7 @@ function createNodeObject(nodeKey, type) {
 
     let newNode = { description, type };
 
-    if (type === 'boolean') {
+    if (type === 'Boolean') {
         if (defaultValue.toLowerCase() === 'true' || defaultValue === '1') {
             newNode.default = true; // Set as boolean true
         } else if (defaultValue.toLowerCase() === 'false' || defaultValue === '0') {
