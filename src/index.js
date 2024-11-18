@@ -142,6 +142,7 @@ function selectNode(key, value, parent) {
     const enumFields = document.getElementById('enum-fields');
     const defaultFields = document.getElementById('default-fields');
 
+    console.log('Retrieving fields...');
     console.log('patternFields:', patternFields);
     console.log('numberFields:', numberFields);
     console.log('exclusiveNumberFields:', exclusiveNumberFields);
@@ -167,7 +168,7 @@ function selectNode(key, value, parent) {
     ];
 
     allFields.forEach(field => {
-        console.log(`Hiding field: ${field.id}`);
+        console.log(`Hiding field: ${field ? field.id : 'null'}`);
         field.style.display = 'none';
     });
 
@@ -361,6 +362,8 @@ function updateSchema(newNode, isAddOperation) {
  */
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM fully loaded and parsed');
+    console.log('Current DOM:', document.body.innerHTML); // Log the entire DOM
+
     const typeSelect = document.getElementById('type');
     const numberFields = document.getElementById('number-fields');
     const exclusiveNumberFields = document.getElementById('exclusive-number-fields');
@@ -381,6 +384,10 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('objectFields:', objectFields);
     console.log('enumFields:', enumFields);
     console.log('defaultFields:', defaultFields);
+
+    // Log the type of each field
+    console.log('Type of patternFields:', typeof patternFields);
+    console.log('Type of enumFields:', typeof enumFields);
 
     /* Hide all fields initially */
     numberFields.style.display = 'none';
