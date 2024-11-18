@@ -142,6 +142,15 @@ function selectNode(key, value, parent) {
     const enumFields = document.getElementById('enum-fields');
     const defaultFields = document.getElementById('default-fields');
 
+    console.log('patternFields:', patternFields);
+    console.log('numberFields:', numberFields);
+    console.log('exclusiveNumberFields:', exclusiveNumberFields);
+    console.log('stringFields:', stringFields);
+    console.log('arrayFields:', arrayFields);
+    console.log('objectFields:', objectFields);
+    console.log('enumFields:', enumFields);
+    console.log('defaultFields:', defaultFields);
+
     const selectedType = value.type || typeof value;
 
     /* Hide all fields initially */
@@ -354,6 +363,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const enumFields = document.getElementById('enum-fields');
     const defaultFields = document.getElementById('default-fields');
 
+    console.log('patternFields:', patternFields);
+    console.log('numberFields:', numberFields);
+    console.log('exclusiveNumberFields:', exclusiveNumberFields);
+    console.log('stringFields:', stringFields);
+    console.log('arrayFields:', arrayFields);
+    console.log('objectFields:', objectFields);
+    console.log('enumFields:', enumFields);
+    console.log('defaultFields:', defaultFields);
+
     /* Hide all fields initially */
     numberFields.style.display = 'none';
     exclusiveNumberFields.style.display = 'none';
@@ -367,6 +385,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     typeSelect.addEventListener('change', () => {
         const selectedType = typeSelect.value;
+        console.log('Selected type:', selectedType);
         numberFields.style.display = selectedType === 'number' ? 'flex' : 'none';
         exclusiveNumberFields.style.display = selectedType === 'number' ? 'flex' : 'none';
         stringFields.style.display = selectedType === 'string' ? 'flex' : 'none';
