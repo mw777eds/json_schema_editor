@@ -166,24 +166,32 @@ function selectNode(key, value, parent) {
         defaultFields
     ];
 
-    allFields.forEach(field => field.style.display = 'none');
+    allFields.forEach(field => {
+        console.log(`Hiding field: ${field.id}`);
+        field.style.display = 'none';
+    });
 
     /* Show relevant fields based on selected type */
     if (selectedType === 'number') {
+        console.log('Showing number fields');
         numberFields.style.display = 'flex';
         exclusiveNumberFields.style.display = 'flex';
         enumFields.style.display = 'flex';
         defaultFields.style.display = 'flex';
     } else if (selectedType === 'string') {
+        console.log('Showing string fields');
         stringFields.style.display = 'flex';
         patternFields.style.display = 'flex';
         enumFields.style.display = 'flex';
         defaultFields.style.display = 'flex';
     } else if (selectedType === 'boolean') {
+        console.log('Showing default fields for boolean');
         defaultFields.style.display = 'flex';
     } else if (selectedType === 'array') {
+        console.log('Showing array fields');
         arrayFields.style.display = 'flex';
     } else if (selectedType === 'object') {
+        console.log('Showing object fields');
         objectFields.style.display = 'flex';
         patternPropertiesFields.style.display = 'flex';
     }
@@ -352,6 +360,7 @@ function updateSchema(newNode, isAddOperation) {
  * Initializes event listeners and sets up the form based on the selected type.
  */
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM fully loaded and parsed');
     const typeSelect = document.getElementById('type');
     const numberFields = document.getElementById('number-fields');
     const exclusiveNumberFields = document.getElementById('exclusive-number-fields');
@@ -363,6 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const enumFields = document.getElementById('enum-fields');
     const defaultFields = document.getElementById('default-fields');
 
+    console.log('Retrieving fields...');
     console.log('patternFields:', patternFields);
     console.log('numberFields:', numberFields);
     console.log('exclusiveNumberFields:', exclusiveNumberFields);
