@@ -152,6 +152,10 @@ function selectNode(key, value, parent) {
     console.log('enumFields:', enumFields);
     console.log('defaultFields:', defaultFields);
 
+    // Log the type of each field
+    console.log('Type of patternFields:', typeof patternFields);
+    console.log('Type of enumFields:', typeof enumFields);
+
     const selectedType = value.type || typeof value;
 
     /* Hide all fields initially */
