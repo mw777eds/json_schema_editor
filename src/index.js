@@ -214,11 +214,12 @@ function addOrEditNode(isAddOperation) {
     const nodeKey = document.getElementById('title').value.trim();
     const type = document.getElementById('type').value;
     const feedback = document.getElementById('validation-feedback');
+    const isRequired = document.getElementById('required').checked; // Get the checkbox state
 
     if (!validateNodeInput(nodeKey, type, feedback)) return;
 
     const newNode = createNodeObject(nodeKey, type);
-    updateSchema(newNode, isAddOperation);
+    updateSchema(newNode, isAddOperation, isRequired); // Pass the checkbox state
     updateTreeView();
     validateSchema();
     resetForm();
@@ -252,7 +253,6 @@ function createNodeObject(nodeKey, type) {
     const defaultValue = document.getElementById('default').value;
     const patternProperties = document.getElementById('patternProperties').value;
     const pattern = document.getElementById('pattern').value;
-    const isRequired = document.getElementById('required').checked;
 
     let newNode = { description, type };
 
@@ -318,7 +318,7 @@ function createNodeObject(nodeKey, type) {
  * Updates the schema with the new node, either adding or editing it.
  * It handles the path to the node based on the key provided.
  */
-function updateSchema(newNode, isAddOperation) {
+function updateSchema(newNode, isAddOperation, isRequired) { // Accept the checkbox state
     let currentNode = state.currentNode;
     const pathParts = document.getElementById('title').value.split('.');
     const lastPart = pathParts.pop();
@@ -352,7 +352,8 @@ function updateSchema(newNode, isAddOperation) {
     }
     state.parentNode.properties[lastPart] = newNode;
 
-    if (newNode.required && newNode.required.includes(lastPart)) {
+    // Update the required array based on the checkbox state
+    if (isRequired) {
         if (!state.parentNode.required) state.parentNode.required = [];
         if (!state.parentNode.required.includes(lastPart)) {
             state.parentNode.required.push(lastPart);
