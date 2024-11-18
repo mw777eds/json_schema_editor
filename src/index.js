@@ -183,26 +183,26 @@ function selectNode(key, value, parent) {
     /* Show relevant fields based on selected type */
     if (selectedType === 'number') {
         console.log('Showing number fields');
-        numberFields.style.display = 'flex';
-        exclusiveNumberFields.style.display = 'flex';
-        enumFields.style.display = 'flex';
-        defaultFields.style.display = 'flex';
+        if (numberFields) numberFields.style.display = 'flex';
+        if (exclusiveNumberFields) exclusiveNumberFields.style.display = 'flex';
+        if (enumFields) enumFields.style.display = 'flex';
+        if (defaultFields) defaultFields.style.display = 'flex';
     } else if (selectedType === 'string') {
         console.log('Showing string fields');
-        stringFields.style.display = 'flex';
-        patternFields.style.display = 'flex';
-        enumFields.style.display = 'flex';
-        defaultFields.style.display = 'flex';
+        if (stringFields) stringFields.style.display = 'flex';
+        if (patternFields) patternFields.style.display = 'flex';
+        if (enumFields) enumFields.style.display = 'flex';
+        if (defaultFields) defaultFields.style.display = 'flex';
     } else if (selectedType === 'boolean') {
         console.log('Showing default fields for boolean');
-        defaultFields.style.display = 'flex';
+        if (defaultFields) defaultFields.style.display = 'flex';
     } else if (selectedType === 'array') {
         console.log('Showing array fields');
-        arrayFields.style.display = 'flex';
+        if (arrayFields) arrayFields.style.display = 'flex';
     } else if (selectedType === 'object') {
         console.log('Showing object fields');
-        objectFields.style.display = 'flex';
-        patternPropertiesFields.style.display = 'flex';
+        if (objectFields) objectFields.style.display = 'flex';
+        if (patternPropertiesFields) patternPropertiesFields.style.display = 'flex';
     }
 }
 
