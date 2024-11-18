@@ -153,8 +153,8 @@ function selectNode(key, value, parent) {
     console.log('defaultFields:', defaultFields);
 
     // Log the type of each field
-    console.log('Type of patternFields:', typeof patternFields);
-    console.log('Type of enumFields:', typeof enumFields);
+    console.log('Type of patternFields:', patternFields ? typeof patternFields : 'null');
+    console.log('Type of enumFields:', enumFields ? typeof enumFields : 'null');
 
     const selectedType = value.type || typeof value;
 
@@ -172,8 +172,12 @@ function selectNode(key, value, parent) {
     ];
 
     allFields.forEach(field => {
-        console.log(`Hiding field: ${field ? field.id : 'null'}`);
-        field.style.display = 'none';
+        if (field) {
+            console.log(`Hiding field: ${field.id}`);
+            field.style.display = 'none';
+        } else {
+            console.log('Hiding field: null');
+        }
     });
 
     /* Show relevant fields based on selected type */
@@ -390,8 +394,8 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('defaultFields:', defaultFields);
 
     // Log the type of each field
-    console.log('Type of patternFields:', typeof patternFields);
-    console.log('Type of enumFields:', typeof enumFields);
+    console.log('Type of patternFields:', patternFields ? typeof patternFields : 'null');
+    console.log('Type of enumFields:', enumFields ? typeof enumFields : 'null');
 
     /* Hide all fields initially */
     numberFields.style.display = 'none';
