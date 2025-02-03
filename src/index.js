@@ -30,7 +30,7 @@ let expandedNodes = new Set();
 /* 
  * Updates the tree view to reflect the current schema structure.
  * It clears the existing tree view and renders the schema nodes.
- * After rendering, the full tree is expanded to show the newly created branch.
+ * After rendering, the full tree is expanded.
  */
 function updateTreeView() {
     const treeView = document.getElementById('schema-tree');
@@ -297,7 +297,10 @@ function createNodeObject(nodeKey, type) {
 
 /* 
  * Updates the schema with the new node.
- * This function navigates into the "properties" object by default, specifically handling arrays by navigating into currentNode.items when the key part is "items".
+ * This function navigates into the "properties" object by default, 
+ * and if the current node is an array with a key part of "items",
+ * it navigates into currentNode.items.
+ * For edit operations, it merges the new node with the old node's children.
  */
 function updateSchema(newNode, isAddOperation, isRequired) {
     let currentNode = state.currentNode;
@@ -321,17 +324,26 @@ function updateSchema(newNode, isAddOperation, isRequired) {
         }
     }
 
-    if (!isAddOperation && state.selectedNode) {
-        if (state.parentNode) {
-            if (state.parentNode.type === 'array' && state.selectedNode.key === 'items') {
-                // For array items, nothing to delete in "properties"
-            } else if (state.parentNode.properties) {
+    // If editing, merge with the existing node's children instead of deleting them.
+    if (!isAddOperation && state.selectedNode && state.parentNode) {
+        let oldNode = state.parentNode.properties[state.selectedNode.key];
+        if (oldNode) {
+            // If the old node has "properties" and newNode doesn't define them, merge them.
+            if (oldNode.properties && !newNode.properties) {
+                newNode.properties = oldNode.properties;
+            }
+            // If the old node has "items" and newNode doesn't define them, merge them.
+            if (oldNode.items && !newNode.items) {
+                newNode.items = oldNode.items;
+            }
+            // Remove the old key if it differs from the new key.
+            if (state.selectedNode.key !== lastPart) {
                 delete state.parentNode.properties[state.selectedNode.key];
-                if (state.parentNode.required) {
-                    const requiredIndex = state.parentNode.required.indexOf(state.selectedNode.key);
-                    if (requiredIndex > -1) {
-                        state.parentNode.required.splice(requiredIndex, 1);
-                    }
+            }
+            if (state.parentNode.required) {
+                const requiredIndex = state.parentNode.required.indexOf(state.selectedNode.key);
+                if (requiredIndex > -1) {
+                    state.parentNode.required.splice(requiredIndex, 1);
                 }
             }
         }
