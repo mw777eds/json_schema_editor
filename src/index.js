@@ -56,6 +56,8 @@ function restoreExpandedNodes() {
  * It creates the necessary HTML elements and sets up event listeners for interaction.
  */
 function renderNode(node, parentElement, key, parent) {
+    console.log(`Rendering node: ${key}`, node); // Debugging line
+
     const nodeElement = document.createElement('div');
     nodeElement.classList.add('tree-node');
     const contentElement = document.createElement('span');
