@@ -150,6 +150,7 @@ function selectNode(key, value, parent) {
     const patternFields = document.getElementById('pattern-fields');
     const enumFields = document.getElementById('enum-fields');
     const defaultFields = document.getElementById('default-fields');
+    const itemTypeFields = document.getElementById('item-type-fields');
 
     const selectedType = value.type || typeof value;
 
@@ -163,7 +164,8 @@ function selectNode(key, value, parent) {
         patternPropertiesFields,
         patternFields,
         enumFields,
-        defaultFields
+        defaultFields,
+        itemTypeFields
     ];
 
     allFields.forEach(field => {
@@ -187,6 +189,7 @@ function selectNode(key, value, parent) {
         if (defaultFields) defaultFields.style.display = 'flex';
     } else if (selectedType === 'array') {
         if (arrayFields) arrayFields.style.display = 'flex';
+        if (itemTypeFields) itemTypeFields.style.display = 'flex';
     } else if (selectedType === 'object') {
         if (objectFields) objectFields.style.display = 'flex';
         if (patternPropertiesFields) patternPropertiesFields.style.display = 'flex';
@@ -295,7 +298,17 @@ function createNodeObject(nodeKey, type) {
     }
 
     if (type === 'array') {
-        newNode.items = state.currentNode.items ? { ...state.currentNode.items } : { type: 'string' };
+        const itemType = document.getElementById('item-type').value;
+        if (itemType === 'object') {
+            newNode.items = {
+                type: 'object',
+                properties: {}, // Initialize properties
+                required: [] // Initialize required properties
+            };
+            // Logic to add properties to the object
+        } else {
+            newNode.items = { type: itemType };
+        }
     }
 
     return newNode;
@@ -367,6 +380,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const patternFields = document.getElementById('pattern-fields');
     const enumFields = document.getElementById('enum-fields');
     const defaultFields = document.getElementById('default-fields');
+    const itemTypeFields = document.getElementById('item-type-fields');
 
     /* Hide all fields initially */
     numberFields.style.display = 'none';
@@ -378,6 +392,7 @@ document.addEventListener('DOMContentLoaded', () => {
     patternFields.style.display = 'none';
     enumFields.style.display = 'none';
     defaultFields.style.display = 'none';
+    itemTypeFields.style.display = 'none';
 
     typeSelect.addEventListener('change', () => {
         const selectedType = typeSelect.value;
@@ -390,6 +405,7 @@ document.addEventListener('DOMContentLoaded', () => {
         patternFields.style.display = selectedType === 'string' ? 'flex' : 'none';
         enumFields.style.display = (selectedType === 'string' || selectedType === 'number') ? 'flex' : 'none';
         defaultFields.style.display = (selectedType === 'boolean' || selectedType === 'string' || selectedType === 'number') ? 'flex' : 'none';
+        itemTypeFields.style.display = selectedType === 'array' ? 'flex' : 'none';
     });
 
     const initialType = typeSelect.value;
@@ -397,6 +413,7 @@ document.addEventListener('DOMContentLoaded', () => {
     patternFields.style.display = initialType === 'string' ? 'flex' : 'none';
     enumFields.style.display = (initialType === 'string' || initialType === 'number') ? 'flex' : 'none';
     defaultFields.style.display = (initialType === 'boolean' || initialType === 'string' || initialType === 'number') ? 'flex' : 'none';
+    itemTypeFields.style.display = initialType === 'array' ? 'flex' : 'none';
 });
 
 /* 
@@ -446,6 +463,7 @@ function resetForm() {
     document.getElementById('maxProperties').value = '';
     document.getElementById('patternProperties').value = '';
     document.getElementById('pattern').value = '';
+    document.getElementById('item-type').value = '';
     document.getElementById('add-btn').style.display = 'inline-block';
     document.getElementById('edit-btn').style.display = 'none';
     document.getElementById('delete-btn').style.display = 'none';
