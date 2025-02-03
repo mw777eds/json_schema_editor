@@ -119,7 +119,16 @@ function selectNode(key, value, parent) {
     document.getElementById('description').value = value.description || '';
     document.getElementById('type').value = value.type || typeof value;
     document.getElementById('enum').value = value.enum ? value.enum.join(',') : '';
-    document.getElementById('default').value = value.default || '';
+    /* 
+     * Updated default field population for boolean type:
+     * if type is boolean, explicitly set the default value (even if false);
+     * otherwise use the value or empty string.
+     */
+    if (value.type === 'boolean') {
+        document.getElementById('default').value = (typeof value.default !== 'undefined') ? value.default.toString() : '';
+    } else {
+        document.getElementById('default').value = value.default || '';
+    }
     document.getElementById('patternProperties').value = value.patternProperties ? 
         Object.entries(value.patternProperties)
             .map(([pattern, prop]) => `${pattern}:${prop.type}`)
@@ -596,7 +605,7 @@ function safeStringify(obj) {
     return JSON.stringify(obj, (key, value) => {
         if (typeof value === "object" && value !== null) {
             if (seen.has(value)) {
-                return; // Remove cyclic reference
+                return;
             }
             seen.add(value);
         }
