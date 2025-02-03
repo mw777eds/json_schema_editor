@@ -319,41 +319,61 @@ function createNodeObject(nodeKey, type) {
 /* 
  * Updates the schema with the new node, either adding or editing it.
  * It handles the path to the node based on the key provided.
+ * 
+ * This updated function now navigates into the current node’s "properties"
+ * by default, but if the current node is an array and the next part in the key is "items",
+ * it navigates into currentNode.items.
  */
-function updateSchema(newNode, isAddOperation, isRequired) { // Accept the checkbox state
+function updateSchema(newNode, isAddOperation, isRequired) {
     let currentNode = state.currentNode;
     const pathParts = document.getElementById('title').value.split('.');
     const lastPart = pathParts.pop();
 
     for (const part of pathParts) {
-        if (!currentNode.properties) {
-            currentNode.properties = {};
+        if (currentNode.type === 'array' && part === 'items') {
+            // Navigate into items, ensure it exists as an object node
+            if (!currentNode.items) {
+                currentNode.items = { type: 'object', properties: {}, required: [] };
+            }
+            currentNode = currentNode.items;
+        } else {
+            if (!currentNode.properties) {
+                currentNode.properties = {};
+            }
+            if (!currentNode.properties[part]) {
+                // Create an object node by default
+                currentNode.properties[part] = { type: 'object', properties: {}, additionalProperties: false };
+            }
+            currentNode = currentNode.properties[part];
         }
-        if (!currentNode.properties[part]) {
-            currentNode.properties[part] = { type: 'object', properties: {}, additionalProperties: false };
-        }
-        currentNode = currentNode.properties[part];
     }
 
+    // If editing an existing node, remove the old one first.
     if (!isAddOperation && state.selectedNode) {
-        if (state.parentNode && state.parentNode.properties) {
-            delete state.parentNode.properties[state.selectedNode.key];
-            const requiredIndex = state.parentNode.required ? state.parentNode.required.indexOf(state.selectedNode.key) : -1;
-            if (requiredIndex > -1) {
-                state.parentNode.required.splice(requiredIndex, 1);
+        if (state.parentNode) {
+            if (state.parentNode.type === 'array' && state.selectedNode.key === 'items') {
+                // For array items, nothing to delete in "properties"
+            } else if (state.parentNode.properties) {
+                delete state.parentNode.properties[state.selectedNode.key];
+                const requiredIndex = state.parentNode.required ? state.parentNode.required.indexOf(state.selectedNode.key) : -1;
+                if (requiredIndex > -1) {
+                    state.parentNode.required.splice(requiredIndex, 1);
+                }
             }
         }
     }
 
-    if (!state.parentNode) {
-        state.parentNode = currentNode;
+    // Now add the new node to the currentNode
+    if (currentNode.type === 'array' && lastPart === 'items') {
+        currentNode.items = newNode;
+    } else {
+        if (!currentNode.properties) {
+            currentNode.properties = {};
+        }
+        currentNode.properties[lastPart] = newNode;
     }
-
-    if (!state.parentNode.properties) {
-        state.parentNode.properties = {};
-    }
-    state.parentNode.properties[lastPart] = newNode;
-    console.log(`Updated schema with new node: ${lastPart}`, newNode); // Debugging line
+    
+    console.log(`Updated schema at key '${lastPart}':`, newNode); // Debugging line
 
     // Update the required array based on the checkbox state
     if (isRequired) {
