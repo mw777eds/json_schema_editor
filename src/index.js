@@ -30,24 +30,22 @@ let expandedNodes = new Set();
 /* 
  * Updates the tree view to reflect the current schema structure.
  * It clears the existing tree view and renders the schema nodes.
+ * After rendering, the full tree is expanded to show the newly created branch.
  */
 function updateTreeView() {
     const treeView = document.getElementById('schema-tree');
     treeView.innerHTML = '';
     renderNode(schema, treeView, schema.title || 'root', null);
-    restoreExpandedNodes();
+    expandAllNodes();
     updatePreview();
 }
 
 /* 
- * Restores the expanded state of nodes in the tree view based on previously expanded nodes.
+ * Expands all nodes in the tree view.
  */
-function restoreExpandedNodes() {
-    expandedNodes.forEach(key => {
-        const nodeElement = document.querySelector(`[data-key="${key}"]`);
-        if (nodeElement) {
-            nodeElement.classList.add('expanded');
-        }
+function expandAllNodes() {
+    document.querySelectorAll('.tree-node').forEach(node => {
+        node.classList.add('expanded');
     });
 }
 
@@ -56,8 +54,6 @@ function restoreExpandedNodes() {
  * It creates the necessary HTML elements and sets up event listeners for interaction.
  */
 function renderNode(node, parentElement, key, parent) {
-    console.log(`Rendering node: ${key}`, node); // Debugging line
-
     const nodeElement = document.createElement('div');
     nodeElement.classList.add('tree-node');
     const contentElement = document.createElement('span');
@@ -85,12 +81,7 @@ function renderNode(node, parentElement, key, parent) {
         if (Object.keys(node.properties).length > 0) {
             nodeElement.onclick = (e) => {
                 e.stopPropagation();
-                const isExpanded = nodeElement.classList.toggle('expanded');
-                if (isExpanded) {
-                    expandedNodes.add(key);
-                } else {
-                    expandedNodes.delete(key);
-                }
+                nodeElement.classList.toggle('expanded');
             };
         } else {
             nodeElement.classList.add('no-children');
@@ -121,11 +112,6 @@ function selectNode(key, value, parent) {
     document.getElementById('description').value = value.description || '';
     document.getElementById('type').value = value.type || typeof value;
     document.getElementById('enum').value = value.enum ? value.enum.join(',') : '';
-    /* 
-     * Updated default field population for boolean type:
-     * if type is boolean, explicitly set the default value (even if false);
-     * otherwise use the value or empty string.
-     */
     if (value.type === 'boolean') {
         document.getElementById('default').value = (typeof value.default !== 'undefined') ? value.default.toString() : '';
     } else {
@@ -142,7 +128,6 @@ function selectNode(key, value, parent) {
     document.getElementById('delete-btn').style.display = 'inline-block';
     document.getElementById('current-operation').textContent = `${state.currentOperation === 'add' ? 'Adding' : 'Editing'}: ${key}`;
 
-    const typeSelect = document.getElementById('type');
     const numberFields = document.getElementById('number-fields');
     const exclusiveNumberFields = document.getElementById('exclusive-number-fields');
     const patternPropertiesFields = document.getElementById('pattern-properties-fields');
@@ -155,8 +140,6 @@ function selectNode(key, value, parent) {
     const itemTypeFields = document.getElementById('item-type-fields');
 
     const selectedType = value.type || typeof value;
-
-    /* Hide all fields initially */
     const allFields = [
         numberFields,
         exclusiveNumberFields,
@@ -176,7 +159,6 @@ function selectNode(key, value, parent) {
         }
     });
 
-    /* Show relevant fields based on selected type */
     if (selectedType === 'number') {
         if (numberFields) numberFields.style.display = 'flex';
         if (exclusiveNumberFields) exclusiveNumberFields.style.display = 'flex';
@@ -206,12 +188,12 @@ function addOrEditNode(isAddOperation) {
     const nodeKey = document.getElementById('title').value.trim();
     const type = document.getElementById('type').value;
     const feedback = document.getElementById('validation-feedback');
-    const isRequired = document.getElementById('required').checked; // Get the checkbox state
+    const isRequired = document.getElementById('required').checked;
 
     if (!validateNodeInput(nodeKey, type, feedback)) return;
 
     const newNode = createNodeObject(nodeKey, type);
-    updateSchema(newNode, isAddOperation, isRequired); // Pass the checkbox state
+    updateSchema(newNode, isAddOperation, isRequired);
     updateTreeView();
     validateSchema();
     resetForm();
@@ -219,7 +201,6 @@ function addOrEditNode(isAddOperation) {
 
 /* 
  * Validates the input for a node to ensure required fields are filled.
- * Displays feedback if any fields are missing.
  */
 function validateNodeInput(nodeKey, type, feedback) {
     let missingFields = [];
@@ -236,8 +217,7 @@ function validateNodeInput(nodeKey, type, feedback) {
 }
 
 /* 
- * Creates a new node object based on the form input.
- * It handles different types and their specific properties.
+ * Creates a new node object based on form input.
  */
 function createNodeObject(nodeKey, type) {
     const description = document.getElementById('description').value;
@@ -250,9 +230,9 @@ function createNodeObject(nodeKey, type) {
 
     if (type === 'boolean') {
         if (defaultValue.toLowerCase() === 'true' || defaultValue === '1') {
-            newNode.default = true; // Set as boolean true
+            newNode.default = true;
         } else if (defaultValue.toLowerCase() === 'false' || defaultValue === '0') {
-            newNode.default = false; // Set as boolean false
+            newNode.default = false;
         } else {
             throw new Error('Default value for boolean must be true, false, 1, or 0.');
         }
@@ -304,10 +284,9 @@ function createNodeObject(nodeKey, type) {
         if (itemType === 'object') {
             newNode.items = {
                 type: 'object',
-                properties: {}, // Initialize properties
-                required: [] // Initialize required properties
+                properties: {},
+                required: []
             };
-            console.log(`Initialized items for array: ${nodeKey}`, newNode.items); // Debugging line
         } else {
             newNode.items = { type: itemType };
         }
@@ -317,12 +296,8 @@ function createNodeObject(nodeKey, type) {
 }
 
 /* 
- * Updates the schema with the new node, either adding or editing it.
- * It handles the path to the node based on the key provided.
- * 
- * This function now navigates into the current node’s "properties" by default, 
- * but if the current node is an array and the next part in the key is "items", 
- * it navigates into currentNode.items.
+ * Updates the schema with the new node.
+ * This function navigates into the "properties" object by default, specifically handling arrays by navigating into currentNode.items when the key part is "items".
  */
 function updateSchema(newNode, isAddOperation, isRequired) {
     let currentNode = state.currentNode;
@@ -331,7 +306,6 @@ function updateSchema(newNode, isAddOperation, isRequired) {
 
     for (const part of pathParts) {
         if (currentNode.type === 'array' && part === 'items') {
-            // Navigate into items, ensure it exists as an object node
             if (!currentNode.items) {
                 currentNode.items = { type: 'object', properties: {}, required: [] };
             }
@@ -341,14 +315,12 @@ function updateSchema(newNode, isAddOperation, isRequired) {
                 currentNode.properties = {};
             }
             if (!currentNode.properties[part]) {
-                // Create an object node by default
                 currentNode.properties[part] = { type: 'object', properties: {}, additionalProperties: false };
             }
             currentNode = currentNode.properties[part];
         }
     }
 
-    // If editing an existing node, remove the old one first.
     if (!isAddOperation && state.selectedNode) {
         if (state.parentNode) {
             if (state.parentNode.type === 'array' && state.selectedNode.key === 'items') {
@@ -365,7 +337,6 @@ function updateSchema(newNode, isAddOperation, isRequired) {
         }
     }
 
-    // Now add the new node to the currentNode
     if (currentNode.type === 'array' && lastPart === 'items') {
         currentNode.items = newNode;
     } else {
@@ -375,14 +346,10 @@ function updateSchema(newNode, isAddOperation, isRequired) {
         currentNode.properties[lastPart] = newNode;
     }
     
-    console.log(`Updated schema at key '${lastPart}':`, newNode); // Debugging line
-
-    // Ensure we have a parent node for updating "required"
     if (!state.parentNode) {
         state.parentNode = currentNode;
     }
     
-    // Update the required array based on the checkbox state
     if (state.parentNode) {
         if (isRequired) {
             if (!state.parentNode.required) state.parentNode.required = [];
@@ -395,8 +362,6 @@ function updateSchema(newNode, isAddOperation, isRequired) {
                 state.parentNode.required.splice(requiredIndex, 1);
             }
         }
-    } else {
-        console.log("Warning: state.parentNode is null when updating required fields.");
     }
 }
 
@@ -416,7 +381,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const defaultFields = document.getElementById('default-fields');
     const itemTypeFields = document.getElementById('item-type-fields');
 
-    /* Hide all fields initially */
     numberFields.style.display = 'none';
     exclusiveNumberFields.style.display = 'none';
     stringFields.style.display = 'none';
@@ -452,7 +416,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* 
  * Event listeners for the Add, Edit, and Delete buttons.
- * These functions handle the respective operations on the schema.
  */
 document.getElementById('add-btn').onclick = () => {
     addOrEditNode(true);
@@ -478,7 +441,6 @@ document.getElementById('delete-btn').onclick = () => {
 
 /* 
  * Resets the form fields to their default state.
- * Clears all input fields and hides the edit/delete buttons.
  */
 function resetForm() {
     document.getElementById('title').value = '';
@@ -510,8 +472,7 @@ function resetForm() {
 }
 
 /* 
- * Validates the schema to ensure it is a valid JSON structure.
- * Displays feedback based on the validation result.
+ * Validates the schema to ensure it is valid JSON.
  */
 function validateSchema() {
     const feedback = document.getElementById('validation-feedback');
@@ -527,7 +488,6 @@ function validateSchema() {
 
 /* 
  * Event listener for the Save button.
- * It attempts to save the schema using FileMaker integration if available.
  */
 document.getElementById('save-btn').onclick = () => {
     const schemaString = safeStringify(schema);
@@ -543,8 +503,7 @@ document.getElementById('save-btn').onclick = () => {
 };
 
 /* 
- * Updates the JSON preview area to reflect the current schema.
- * It formats the JSON based on the user's preference (formatted/compact).
+ * Updates the JSON preview area.
  */
 function updatePreview() {
     const previewElement = document.getElementById('json-preview');
@@ -552,8 +511,7 @@ function updatePreview() {
 }
 
 /* 
- * Formats the JSON object into a string with indentation for better readability.
- * It also applies syntax highlighting for different JSON types.
+ * Formats the JSON object into a string with syntax highlighting.
  */
 function formatJSON(obj) {
     return JSON.stringify(obj, null, 2)
@@ -577,8 +535,7 @@ function formatJSON(obj) {
 }
 
 /* 
- * Toggles the formatting of the JSON preview between formatted and compact.
- * Updates the button text accordingly.
+ * Toggles the formatting of the JSON preview.
  */
 document.getElementById('format-btn').onclick = () => {
     state.isFormatted = !state.isFormatted;
@@ -588,7 +545,6 @@ document.getElementById('format-btn').onclick = () => {
 
 /* 
  * Copies the current schema to the clipboard.
- * Displays feedback to the user upon successful copy.
  */
 document.getElementById('copy-btn').onclick = async () => {
     const schemaString = JSON.stringify(schema);
@@ -606,7 +562,6 @@ document.getElementById('copy-btn').onclick = async () => {
 
 /* 
  * Updates the schema ID when the input changes.
- * This reflects the change in the preview.
  */
 document.getElementById('schema-id').onchange = (e) => {
     schema.$id = e.target.value;
@@ -615,7 +570,6 @@ document.getElementById('schema-id').onchange = (e) => {
 
 /* 
  * Applies a pasted schema from the textarea.
- * It parses the JSON and updates the schema if valid.
  */
 function applySchemaFromString(pastedSchema) {
     const feedback = document.getElementById('paste-feedback');
