@@ -307,6 +307,7 @@ function createNodeObject(nodeKey, type) {
                 properties: {}, // Initialize properties
                 required: [] // Initialize required properties
             };
+            console.log(`Initialized items for array: ${nodeKey}`, newNode.items); // Debugging line
         } else {
             newNode.items = { type: itemType };
         }
@@ -352,6 +353,7 @@ function updateSchema(newNode, isAddOperation, isRequired) { // Accept the check
         state.parentNode.properties = {};
     }
     state.parentNode.properties[lastPart] = newNode;
+    console.log(`Updated schema with new node: ${lastPart}`, newNode); // Debugging line
 
     // Update the required array based on the checkbox state
     if (isRequired) {
