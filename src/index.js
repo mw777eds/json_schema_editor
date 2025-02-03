@@ -307,7 +307,6 @@ function createNodeObject(nodeKey, type) {
                 properties: {}, // Initialize properties
                 required: [] // Initialize required properties
             };
-            // Logic to add properties to the object
         } else {
             newNode.items = { type: itemType };
         }
