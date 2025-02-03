@@ -320,8 +320,8 @@ function createNodeObject(nodeKey, type) {
  * Updates the schema with the new node, either adding or editing it.
  * It handles the path to the node based on the key provided.
  * 
- * This updated function now navigates into the current node’s "properties"
- * by default, but if the current node is an array and the next part in the key is "items",
+ * This function now navigates into the current node’s "properties" by default, 
+ * but if the current node is an array and the next part in the key is "items", 
  * it navigates into currentNode.items.
  */
 function updateSchema(newNode, isAddOperation, isRequired) {
@@ -355,9 +355,11 @@ function updateSchema(newNode, isAddOperation, isRequired) {
                 // For array items, nothing to delete in "properties"
             } else if (state.parentNode.properties) {
                 delete state.parentNode.properties[state.selectedNode.key];
-                const requiredIndex = state.parentNode.required ? state.parentNode.required.indexOf(state.selectedNode.key) : -1;
-                if (requiredIndex > -1) {
-                    state.parentNode.required.splice(requiredIndex, 1);
+                if (state.parentNode.required) {
+                    const requiredIndex = state.parentNode.required.indexOf(state.selectedNode.key);
+                    if (requiredIndex > -1) {
+                        state.parentNode.required.splice(requiredIndex, 1);
+                    }
                 }
             }
         }
@@ -375,17 +377,26 @@ function updateSchema(newNode, isAddOperation, isRequired) {
     
     console.log(`Updated schema at key '${lastPart}':`, newNode); // Debugging line
 
+    // Ensure we have a parent node for updating "required"
+    if (!state.parentNode) {
+        state.parentNode = currentNode;
+    }
+    
     // Update the required array based on the checkbox state
-    if (isRequired) {
-        if (!state.parentNode.required) state.parentNode.required = [];
-        if (!state.parentNode.required.includes(lastPart)) {
-            state.parentNode.required.push(lastPart);
+    if (state.parentNode) {
+        if (isRequired) {
+            if (!state.parentNode.required) state.parentNode.required = [];
+            if (!state.parentNode.required.includes(lastPart)) {
+                state.parentNode.required.push(lastPart);
+            }
+        } else if (state.parentNode.required) {
+            const requiredIndex = state.parentNode.required.indexOf(lastPart);
+            if (requiredIndex > -1) {
+                state.parentNode.required.splice(requiredIndex, 1);
+            }
         }
-    } else if (state.parentNode.required) {
-        const requiredIndex = state.parentNode.required.indexOf(lastPart);
-        if (requiredIndex > -1) {
-            state.parentNode.required.splice(requiredIndex, 1);
-        }
+    } else {
+        console.log("Warning: state.parentNode is null when updating required fields.");
     }
 }
 
@@ -453,9 +464,11 @@ document.getElementById('edit-btn').onclick = () => {
 document.getElementById('delete-btn').onclick = () => {
     if (state.selectedNode && state.parentNode) {
         delete state.parentNode.properties[state.selectedNode.key];
-        const requiredIndex = state.parentNode.required ? state.parentNode.required.indexOf(state.selectedNode.key) : -1;
-        if (requiredIndex > -1) {
-            state.parentNode.required.splice(requiredIndex, 1);
+        if (state.parentNode.required) {
+            const requiredIndex = state.parentNode.required.indexOf(state.selectedNode.key);
+            if (requiredIndex > -1) {
+                state.parentNode.required.splice(requiredIndex, 1);
+            }
         }
         updateTreeView();
         validateSchema();
