@@ -105,6 +105,9 @@ function renderNode(node, parentElement, key, parent) {
  * It also updates the current operation (add/edit) and shows/hides relevant fields.
  */
 function selectNode(key, value, parent) {
+    // Debug log for selectNode
+    console.log("selectNode called for key:", key, "value:", value, "parent:", parent);
+    
     state.selectedNode = { key, value, parent };
     state.parentNode = parent;
     state.currentNode = value;
@@ -122,7 +125,7 @@ function selectNode(key, value, parent) {
             .map(([pattern, prop]) => `${pattern}:${prop.type}`)
             .join(',') : '';
 
-    document.getElementById('required').checked = parent && parent.required && parent.required.includes(key);
+    document.getElementById('required').checked = parent && parent.required && parent.required.indexOf(key) > -1;
     document.getElementById('add-btn').style.display = 'inline-block';
     document.getElementById('edit-btn').style.display = 'inline-block';
     document.getElementById('delete-btn').style.display = 'inline-block';
@@ -152,13 +155,11 @@ function selectNode(key, value, parent) {
         defaultFields,
         itemTypeFields
     ];
-
     allFields.forEach(field => {
         if (field) {
             field.style.display = 'none';
         }
     });
-
     if (selectedType === 'number') {
         if (numberFields) numberFields.style.display = 'flex';
         if (exclusiveNumberFields) exclusiveNumberFields.style.display = 'flex';
@@ -190,9 +191,12 @@ function addOrEditNode(isAddOperation) {
     const feedback = document.getElementById('validation-feedback');
     const isRequired = document.getElementById('required').checked;
 
+    console.log("addOrEditNode called with", { nodeKey, type, isAddOperation, isRequired });
+    
     if (!validateNodeInput(nodeKey, type, feedback)) return;
-
+    
     const newNode = createNodeObject(nodeKey, type);
+    console.log("New node created: ", newNode);
     updateSchema(newNode, isAddOperation, isRequired);
     updateTreeView();
     validateSchema();
@@ -206,7 +210,6 @@ function validateNodeInput(nodeKey, type, feedback) {
     let missingFields = [];
     if (!nodeKey) missingFields.push('Key');
     if (!type) missingFields.push('Type');
-
     if (missingFields.length > 0) {
         feedback.textContent = `${missingFields.join(' and ')} ${missingFields.length > 1 ? 'are' : 'is'} required.`;
         feedback.style.display = 'inline';
@@ -227,7 +230,7 @@ function createNodeObject(nodeKey, type) {
     const pattern = document.getElementById('pattern').value;
 
     let newNode = { description, type };
-
+    
     if (type === 'boolean') {
         if (defaultValue.toLowerCase() === 'true' || defaultValue === '1') {
             newNode.default = true;
@@ -239,13 +242,12 @@ function createNodeObject(nodeKey, type) {
     } else if (defaultValue) {
         newNode.default = type === 'number' ? parseFloat(defaultValue) : defaultValue;
     }
-
+    
     if (type === 'number') {
         const minimum = document.getElementById('minimum').value;
         const maximum = document.getElementById('maximum').value;
         const exclusiveMinimum = document.getElementById('exclusiveMinimum').value;
         const exclusiveMaximum = document.getElementById('exclusiveMaximum').value;
-
         if (minimum) newNode.minimum = parseFloat(minimum);
         if (maximum) newNode.maximum = parseFloat(maximum);
         if (exclusiveMinimum) newNode.exclusiveMinimum = parseFloat(exclusiveMinimum);
@@ -253,32 +255,30 @@ function createNodeObject(nodeKey, type) {
     } else if (type === 'string') {
         const minLength = document.getElementById('minLength').value;
         const maxLength = document.getElementById('maxLength').value;
-
         if (minLength) newNode.minLength = parseInt(minLength, 10);
         if (maxLength) newNode.maxLength = parseInt(maxLength, 10);
         if (pattern) newNode.pattern = pattern;
     }
-
+    
     if (patternProperties) {
         const [pattern, propType] = patternProperties.split(/:(.+)/).map(v => v.trim());
         if (pattern && propType) {
             newNode.patternProperties = { [pattern]: { type: propType } };
         }
     }
-
+    
     if (type === 'object') {
         newNode.properties = {};
         newNode.required = [];
         const minProperties = document.getElementById('minProperties').value;
         const maxProperties = document.getElementById('maxProperties').value;
-
         if (minProperties) newNode.minProperties = parseInt(minProperties, 10);
         if (maxProperties) newNode.maxProperties = parseInt(maxProperties, 10);
     }
     if (enumValues) {
         newNode.enum = enumValues.split(',').map(v => v.trim());
     }
-
+    
     if (type === 'array') {
         const itemType = document.getElementById('item-type').value;
         if (itemType === 'object') {
@@ -291,53 +291,60 @@ function createNodeObject(nodeKey, type) {
             newNode.items = { type: itemType };
         }
     }
-
+    
+    console.log("createNodeObject returning: ", newNode);
     return newNode;
 }
 
 /* 
  * Updates the schema with the new node.
- * This function navigates into the "properties" object by default, 
- * and if the current node is an array with a key part of "items",
- * it navigates into currentNode.items.
+ * This function navigates into the "properties" object by default, and if 
+ * the current node is an array with a key part of "items", it navigates into currentNode.items.
  * For edit operations, it merges the new node with the old node's children.
  */
 function updateSchema(newNode, isAddOperation, isRequired) {
+    console.log("updateSchema called with newNode: ", newNode, "isAddOperation:", isAddOperation);
     let currentNode = state.currentNode;
     const pathParts = document.getElementById('title').value.split('.');
     const lastPart = pathParts.pop();
-
+    console.log("Path parts:", pathParts, "Last part:", lastPart);
+    
     for (const part of pathParts) {
         if (currentNode.type === 'array' && part === 'items') {
             if (!currentNode.items) {
+                console.log("Creating missing items object in array for part:", part);
                 currentNode.items = { type: 'object', properties: {}, required: [] };
             }
             currentNode = currentNode.items;
         } else {
             if (!currentNode.properties) {
+                console.log("Creating missing properties for current node");
                 currentNode.properties = {};
             }
             if (!currentNode.properties[part]) {
+                console.log("Creating new object node for part:", part);
                 currentNode.properties[part] = { type: 'object', properties: {}, additionalProperties: false };
             }
             currentNode = currentNode.properties[part];
         }
     }
-
-    // If editing, merge with the existing node's children instead of deleting them.
+    console.log("After navigation, currentNode:", currentNode);
+    
+    // If editing, merge with the existing node's properties.
     if (!isAddOperation && state.selectedNode && state.parentNode) {
         let oldNode = state.parentNode.properties[state.selectedNode.key];
+        console.log("Old node to merge:", oldNode);
         if (oldNode) {
-            // If the old node has "properties" and newNode doesn't define them, merge them.
             if (oldNode.properties && !newNode.properties) {
                 newNode.properties = oldNode.properties;
+                console.log("Merged old node properties into new node");
             }
-            // If the old node has "items" and newNode doesn't define them, merge them.
             if (oldNode.items && !newNode.items) {
                 newNode.items = oldNode.items;
+                console.log("Merged old node items into new node");
             }
-            // Remove the old key if it differs from the new key.
             if (state.selectedNode.key !== lastPart) {
+                console.log("Key changed from", state.selectedNode.key, "to", lastPart, ". Removing old key.");
                 delete state.parentNode.properties[state.selectedNode.key];
             }
             if (state.parentNode.required) {
@@ -348,18 +355,21 @@ function updateSchema(newNode, isAddOperation, isRequired) {
             }
         }
     }
-
+    
     if (currentNode.type === 'array' && lastPart === 'items') {
         currentNode.items = newNode;
+        console.log("Set newNode into currentNode.items");
     } else {
         if (!currentNode.properties) {
             currentNode.properties = {};
         }
         currentNode.properties[lastPart] = newNode;
+        console.log("Set newNode into currentNode.properties for key:", lastPart);
     }
     
     if (!state.parentNode) {
         state.parentNode = currentNode;
+        console.log("state.parentNode was null, setting to currentNode");
     }
     
     if (state.parentNode) {
@@ -367,14 +377,20 @@ function updateSchema(newNode, isAddOperation, isRequired) {
             if (!state.parentNode.required) state.parentNode.required = [];
             if (!state.parentNode.required.includes(lastPart)) {
                 state.parentNode.required.push(lastPart);
+                console.log("Added", lastPart, "to required");
             }
         } else if (state.parentNode.required) {
             const requiredIndex = state.parentNode.required.indexOf(lastPart);
             if (requiredIndex > -1) {
                 state.parentNode.required.splice(requiredIndex, 1);
+                console.log("Removed", lastPart, "from required");
             }
         }
+    } else {
+        console.warn("state.parentNode is null when updating required fields");
     }
+    
+    console.log("updateSchema finished. Current state.parentNode:", state.parentNode);
 }
 
 /* 
@@ -392,7 +408,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const enumFields = document.getElementById('enum-fields');
     const defaultFields = document.getElementById('default-fields');
     const itemTypeFields = document.getElementById('item-type-fields');
-
+    
     numberFields.style.display = 'none';
     exclusiveNumberFields.style.display = 'none';
     stringFields.style.display = 'none';
@@ -403,7 +419,7 @@ document.addEventListener('DOMContentLoaded', () => {
     enumFields.style.display = 'none';
     defaultFields.style.display = 'none';
     itemTypeFields.style.display = 'none';
-
+    
     typeSelect.addEventListener('change', () => {
         const selectedType = typeSelect.value;
         numberFields.style.display = selectedType === 'number' ? 'flex' : 'none';
@@ -417,7 +433,7 @@ document.addEventListener('DOMContentLoaded', () => {
         defaultFields.style.display = (selectedType === 'boolean' || selectedType === 'string' || selectedType === 'number') ? 'flex' : 'none';
         itemTypeFields.style.display = selectedType === 'array' ? 'flex' : 'none';
     });
-
+    
     const initialType = typeSelect.value;
     patternPropertiesFields.style.display = initialType === 'object' ? 'flex' : 'none';
     patternFields.style.display = initialType === 'string' ? 'flex' : 'none';
