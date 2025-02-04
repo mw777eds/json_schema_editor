@@ -105,18 +105,18 @@ body {
     border-top: 1px solid #ccc;
     padding: 10px;
     overflow-y: auto;
-    overflow-x: auto; /* Allow horizontal scrolling */
 }
 
 #json-preview-container {
     height: calc(100% - 40px);
     overflow-y: auto;
+    overflow-x: auto; /* Allow horizontal scrolling */
     white-space: nowrap; /* Prevent line breaks */
 }
 
 #json-preview {
-    max-height: 100%;
     display: inline-block; /* Allow horizontal scrolling */
+    min-width: 100%; /* Ensure it takes full width */
 }
 
 .tree-node {
