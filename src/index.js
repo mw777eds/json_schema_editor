@@ -583,7 +583,7 @@ document.getElementById('copy-btn').onclick = async () => {
 };
 
 /* 
- * Updates the schema ID when input changes.
+ * Updates the schema ID when the input changes.
  */
 document.getElementById('schema-id').onchange = (e) => {
     schema.$id = e.target.value;
