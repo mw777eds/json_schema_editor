@@ -126,8 +126,8 @@ function selectNode(key, value, parent) {
     document.getElementById('delete-btn').style.display = 'inline-block';
     document.getElementById('current-operation').textContent = `Editing: ${key}`; // Updated to show Editing
 
-    console.log(`Selected node: ${key}`, value); // Logging selected node
-    console.log(`Parent node:`, parent); // Logging parent node
+    console.log(`Selected node: ${key}`, JSON.stringify(value, null, 2)); // Logging selected node as JSON
+    console.log(`Parent node:`, JSON.stringify(parent, null, 2)); // Logging parent node as JSON
 
     const numberFields = document.getElementById('number-fields');
     const exclusiveNumberFields = document.getElementById('exclusive-number-fields');
@@ -353,6 +353,7 @@ function updateSchema(newNode, isAddOperation, isRequired) {
         }
     } else {
         // Add mode: navigate relative to state.currentNode.
+        let parent = state.parentNode;
         for (const part of pathParts) {
             if (currentNode.type === 'array' && part === 'items') {
                 if (!currentNode.items) {
