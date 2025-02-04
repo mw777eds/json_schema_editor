@@ -519,6 +519,7 @@ document.getElementById('save-btn').onclick = () => {
 function updatePreview() {
     const previewElement = document.getElementById('json-preview');
     previewElement.innerHTML = '<pre>' + (state.isFormatted ? formatJSON(schema) : safeStringify(schema)) + '</pre>';
+    document.getElementById('format-btn').textContent = state.isFormatted ? 'Compact JSON' : 'Format JSON'; // Update button label here
 }
 
 /* 
