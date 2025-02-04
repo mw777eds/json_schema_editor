@@ -11,7 +11,6 @@ let schema = {
  */
 document.getElementById('apply-pasted-schema').onclick = () => {
     const pastedSchema = document.getElementById('paste-schema').value;
-    console.log("Applying pasted schema:", pastedSchema);
     applySchemaFromString(pastedSchema);
 };
 
@@ -30,7 +29,6 @@ let state = {
  * Updates the tree view, expands all nodes, and updates the preview.
  */
 function updateTreeView() {
-    console.log("Updating tree view...");
     const treeView = document.getElementById('schema-tree');
     treeView.innerHTML = '';
     renderNode(schema, treeView, schema.title || 'root', null);
@@ -42,7 +40,6 @@ function updateTreeView() {
  * Expands all nodes in the tree view.
  */
 function expandAllNodes() {
-    console.log("Expanding all nodes...");
     document.querySelectorAll('.tree-node').forEach(node => {
         node.classList.add('expanded');
     });
@@ -52,7 +49,6 @@ function expandAllNodes() {
  * Renders a node in the tree view.
  */
 function renderNode(node, parentElement, key, parent) {
-    console.log("Rendering node:", key, JSON.stringify(node, null, 2));
     const nodeElement = document.createElement('div');
     nodeElement.classList.add('tree-node');
     const contentElement = document.createElement('span');
@@ -62,7 +58,6 @@ function renderNode(node, parentElement, key, parent) {
 
     contentElement.onclick = (e) => {
         e.stopPropagation();
-        console.log("Node clicked:", key);
         selectNode(key, node, parent);
     };
 
@@ -103,7 +98,6 @@ function renderNode(node, parentElement, key, parent) {
  * Additionally, if the selected node is an array, the item-type selection is prepopulated.
  */
 function selectNode(key, value, parent) {
-    console.log("Selecting node:", key);
     state.selectedNode = { key, value, parent };
     state.parentNode = parent ? parent : state.currentNode;
     state.currentNode = value;
@@ -133,9 +127,6 @@ function selectNode(key, value, parent) {
     document.getElementById('edit-btn').style.display = 'inline-block'; // Ensure edit button is visible
     document.getElementById('delete-btn').style.display = 'inline-block';
     document.getElementById('current-operation').textContent = `Editing: ${key}`; // Updated to show Editing
-
-    console.log(`Selected node: ${key}`, JSON.stringify(value, null, 2)); // Logging selected node as JSON
-    console.log(`Parent node:`, JSON.stringify(parent, null, 2)); // Logging parent node as JSON
 
     const numberFields = document.getElementById('number-fields');
     const exclusiveNumberFields = document.getElementById('exclusive-number-fields');
