@@ -457,7 +457,7 @@ document.getElementById('add-btn').onclick = () => {
     console.log("Add button clicked");
     addOrEditNode(true);
 };
-document.getElementById('top-edit-btn').onclick = () => {
+document.getElementById('edit-btn').onclick = () => {
     console.log("Edit button clicked");
     addOrEditNode(false);
 };
