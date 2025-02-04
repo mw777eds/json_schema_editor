@@ -83,7 +83,9 @@ function renderNode(node, parentElement, key, parent) {
         const childrenContainer = document.createElement('div');
         childrenContainer.classList.add('tree-node-children');
         nodeElement.appendChild(childrenContainer);
-        renderNode(node.items, childrenContainer, 'items', node);
+        for (const item of node.items) {
+            renderNode(item, childrenContainer, 'items', node);
+        }
         nodeElement.onclick = (e) => {
             e.stopPropagation();
             nodeElement.classList.toggle('expanded');
@@ -306,7 +308,6 @@ function updateSchema(newNode, isAddOperation, isRequired) {
     const titleVal = document.getElementById('title').value.trim();
     const pathParts = titleVal.split('.');
     const newKey = pathParts.pop();
-    
     
     if (!isAddOperation) {
         // Edit mode: update parent's property key and merge children.
