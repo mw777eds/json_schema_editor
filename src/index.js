@@ -695,5 +695,11 @@ function showView(view) {
 // Set default view to 'edit' on load
 showView(state.currentView);
 
-document.getElementById('top-edit-btn').onclick = () => showView('edit');
-document.getElementById('preview-btn').onclick = () => showView('preview');
+document.getElementById('top-edit-btn').onclick = () => {
+    console.log("Top Edit button clicked");
+    showView('edit');
+};
+document.getElementById('preview-btn').onclick = () => {
+    console.log("Preview button clicked");
+    showView('preview');
+};
