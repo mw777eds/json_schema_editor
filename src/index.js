@@ -52,7 +52,7 @@ function expandAllNodes() {
  * Renders a node in the tree view.
  */
 function renderNode(node, parentElement, key, parent) {
-    console.log("Rendering node:", key, node);
+    console.log("Rendering node:", key, JSON.stringify(node, null, 2));
     const nodeElement = document.createElement('div');
     nodeElement.classList.add('tree-node');
     const contentElement = document.createElement('span');
@@ -200,7 +200,7 @@ function addOrEditNode(isAddOperation) {
     if (!validateNodeInput(nodeKey, type, feedback)) return;
     
     const newNode = createNodeObject(nodeKey, type);
-    console.log("New node created:", newNode);
+    console.log("New node created:", JSON.stringify(newNode, null, 2));
     updateSchema(newNode, isAddOperation, isRequired);
     updateTreeView();
     validateSchema();
@@ -236,7 +236,7 @@ function createNodeObject(nodeKey, type) {
     const pattern = document.getElementById('pattern').value;
     
     let newNode = { description, type };
-    console.log("Creating node object:", newNode);
+    console.log("Creating node object:", JSON.stringify(newNode, null, 2));
 
     if (type === 'boolean') {
         if (defaultValue.toLowerCase() === 'true' || defaultValue === '1') {
@@ -299,7 +299,7 @@ function createNodeObject(nodeKey, type) {
         }
     }
     
-    console.log("Node object created:", newNode);
+    console.log("Node object created:", JSON.stringify(newNode, null, 2));
     return newNode;
 }
 
@@ -395,7 +395,7 @@ function updateSchema(newNode, isAddOperation, isRequired) {
 
     // Update the schema ID with the value from the input field
     schema.$id = document.getElementById('schema-id').value; // Ensure the $id is updated
-    console.log("Schema updated:", schema);
+    console.log("Schema updated:", JSON.stringify(schema, null, 2));
 }
 
 /* 
@@ -621,7 +621,7 @@ function applySchemaFromString(pastedSchema) {
     const feedback = document.getElementById('paste-feedback');
     try {
         const parsedSchema = JSON.parse(pastedSchema);
-        console.log("Parsed schema:", parsedSchema);
+        console.log("Parsed schema:", JSON.stringify(parsedSchema, null, 2));
         if (typeof parsedSchema === 'object' && parsedSchema !== null) {
             schema = parsedSchema;
             document.getElementById('schema-version').value = schema.$schema || '';
