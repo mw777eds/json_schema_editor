@@ -83,9 +83,7 @@ function renderNode(node, parentElement, key, parent) {
         const childrenContainer = document.createElement('div');
         childrenContainer.classList.add('tree-node-children');
         nodeElement.appendChild(childrenContainer);
-        for (const item of node.items) {
-            renderNode(item, childrenContainer, 'items', node);
-        }
+        renderNode(node.items, childrenContainer, 'items', node); // Corrected this line
         nodeElement.onclick = (e) => {
             e.stopPropagation();
             nodeElement.classList.toggle('expanded');
