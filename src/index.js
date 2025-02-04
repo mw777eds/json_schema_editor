@@ -121,7 +121,15 @@ function selectNode(key, value, parent) {
             .map(([pattern, prop]) => `${pattern}:${prop.type}`)
             .join(',') : '';
     document.getElementById('required').checked = parent && parent.required && parent.required.indexOf(key) > -1;
-    document.getElementById('add-btn').style.display = 'inline-block';
+
+    // Show or hide the add button based on the selected node type
+    const addButton = document.getElementById('add-btn');
+    if (value.type === 'object' || (value.type === 'array' && value.items)) {
+        addButton.style.display = 'inline-block';
+    } else {
+        addButton.style.display = 'none';
+    }
+
     document.getElementById('edit-btn').style.display = 'inline-block'; // Ensure edit button is visible
     document.getElementById('delete-btn').style.display = 'inline-block';
     document.getElementById('current-operation').textContent = `Editing: ${key}`; // Updated to show Editing
