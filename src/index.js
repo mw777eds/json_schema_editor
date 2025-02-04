@@ -21,7 +21,8 @@ let state = {
     selectedNode: null,
     parentNode: null,
     currentOperation: 'add',
-    isFormatted: true
+    isFormatted: true,
+    currentView: 'edit' // Default view is 'edit'
 };
 
 let expandedNodes = new Set();
@@ -435,6 +436,9 @@ document.addEventListener('DOMContentLoaded', () => {
     enumFields.style.display = (initialType === 'string' || initialType === 'number') ? 'flex' : 'none';
     defaultFields.style.display = (initialType === 'boolean' || initialType === 'string' || initialType === 'number') ? 'flex' : 'none';
     itemTypeFields.style.display = initialType === 'array' ? 'flex' : 'none';
+
+    // Set default view to 'edit'
+    showView(state.currentView);
 });
 
 /* 
@@ -641,5 +645,28 @@ function safeStringify(obj) {
     });
 }
 
-document.getElementById('format-btn').textContent = 'Compact JSON';
-updateTreeView();
+/* 
+ * Show the specified view (edit or preview).
+ */
+function showView(view) {
+    const editorSection = document.getElementById('editor');
+    const treeViewSection = document.getElementById('tree-view');
+    const previewSection = document.getElementById('preview');
+
+    if (view === 'edit') {
+        editorSection.style.display = 'block';
+        treeViewSection.style.display = 'block';
+        previewSection.style.display = 'none';
+    } else if (view === 'preview') {
+        editorSection.style.display = 'none';
+        treeViewSection.style.display = 'none';
+        previewSection.style.display = 'block';
+    }
+    state.currentView = view; // Update the current view state
+}
+
+// Set default view to 'edit' on load
+showView(state.currentView);
+
+document.getElementById('edit-btn').onclick = () => showView('edit');
+document.getElementById('preview-btn').onclick = () => showView('preview');
