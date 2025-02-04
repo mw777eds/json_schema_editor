@@ -95,12 +95,12 @@ function renderNode(node, parentElement, key, parent) {
 }
 
 /* 
- * Selects a node in the tree view and populates the form.
+ * Selects a node in the tree view and populates the form with its details.
+ * Additionally, if the selected node is an array, the item-type selection is prepopulated.
  */
 function selectNode(key, value, parent) {
     console.log("selectNode called for key:", key, "value:", value, "parent:", parent);
     state.selectedNode = { key, value, parent };
-    // For top-level editing, if parent is null, set parentNode to currentNode.
     state.parentNode = parent ? parent : state.currentNode;
     state.currentNode = value;
     document.getElementById('title').value = key;
@@ -113,7 +113,9 @@ function selectNode(key, value, parent) {
         document.getElementById('default').value = value.default || '';
     }
     document.getElementById('patternProperties').value = value.patternProperties ? 
-        Object.entries(value.patternProperties).map(([pattern, prop]) => `${pattern}:${prop.type}`).join(',') : '';
+        Object.entries(value.patternProperties)
+            .map(([pattern, prop]) => `${pattern}:${prop.type}`)
+            .join(',') : '';
     document.getElementById('required').checked = parent && parent.required && parent.required.indexOf(key) > -1;
     document.getElementById('add-btn').style.display = 'inline-block';
     document.getElementById('edit-btn').style.display = 'inline-block';
@@ -130,14 +132,26 @@ function selectNode(key, value, parent) {
     const enumFields = document.getElementById('enum-fields');
     const defaultFields = document.getElementById('default-fields');
     const itemTypeFields = document.getElementById('item-type-fields');
-
+    
     const selectedType = value.type || typeof value;
-    const allFields = [numberFields, exclusiveNumberFields, stringFields, arrayFields, objectFields, patternPropertiesFields, patternFields, enumFields, defaultFields, itemTypeFields];
+    const allFields = [
+        numberFields,
+        exclusiveNumberFields,
+        stringFields,
+        arrayFields,
+        objectFields,
+        patternPropertiesFields,
+        patternFields,
+        enumFields,
+        defaultFields,
+        itemTypeFields
+    ];
     allFields.forEach(field => {
         if (field) {
             field.style.display = 'none';
         }
     });
+    
     if (selectedType === 'number') {
         if (numberFields) numberFields.style.display = 'flex';
         if (exclusiveNumberFields) exclusiveNumberFields.style.display = 'flex';
@@ -152,7 +166,15 @@ function selectNode(key, value, parent) {
         if (defaultFields) defaultFields.style.display = 'flex';
     } else if (selectedType === 'array') {
         if (arrayFields) arrayFields.style.display = 'flex';
-        if (itemTypeFields) itemTypeFields.style.display = 'flex';
+        if (itemTypeFields) {
+            itemTypeFields.style.display = 'flex';
+            // Prepopulate the item-type select if available.
+            if (value.items && value.items.type) {
+                document.getElementById('item-type').value = value.items.type;
+            } else {
+                document.getElementById('item-type').value = "";
+            }
+        }
     } else if (selectedType === 'object') {
         if (objectFields) objectFields.style.display = 'flex';
         if (patternPropertiesFields) patternPropertiesFields.style.display = 'flex';
@@ -160,7 +182,7 @@ function selectNode(key, value, parent) {
 }
 
 /* 
- * Adds or edits a node in the schema.
+ * Adds or edits a node in the schema based on the form input.
  */
 function addOrEditNode(isAddOperation) {
     const nodeKey = document.getElementById('title').value.trim();
@@ -195,7 +217,7 @@ function validateNodeInput(nodeKey, type, feedback) {
 }
 
 /* 
- * Creates a new node based on form input.
+ * Creates a new node object based on form input.
  */
 function createNodeObject(nodeKey, type) {
     const description = document.getElementById('description').value;
@@ -515,7 +537,7 @@ function updatePreview() {
 }
 
 /* 
- * Formats the JSON object.
+ * Formats the JSON object with syntax highlighting.
  */
 function formatJSON(obj) {
     return JSON.stringify(obj, null, 2)
@@ -539,7 +561,7 @@ function formatJSON(obj) {
 }
 
 /* 
- * Toggles JSON preview formatting.
+ * Toggles the formatting of the JSON preview.
  */
 document.getElementById('format-btn').onclick = () => {
     state.isFormatted = !state.isFormatted;
@@ -565,7 +587,7 @@ document.getElementById('copy-btn').onclick = async () => {
 };
 
 /* 
- * Updates the schema ID on input change.
+ * Updates the schema ID when the input changes.
  */
 document.getElementById('schema-id').onchange = (e) => {
     schema.$id = e.target.value;
@@ -602,7 +624,7 @@ function applySchemaFromString(pastedSchema) {
 }
 
 /* 
- * Toggles the visibility of schema options.
+ * Toggles the visibility of the schema options.
  */
 document.getElementById('toggle-schema-options').onclick = () => {
     const schemaOptions = document.getElementById('schema-options');
