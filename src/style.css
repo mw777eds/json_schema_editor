@@ -62,7 +62,7 @@ body {
 .top-section {
     display: flex;
     flex-direction: row;
-    height: 50vh;
+    height: 100%;
     margin-bottom: 20px;
     border-top: 1px solid #ccc; /* Added border-top */
 }
