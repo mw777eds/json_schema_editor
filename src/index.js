@@ -25,8 +25,6 @@ let state = {
     currentView: 'edit' // Default view is 'edit'
 };
 
-let expandedNodes = new Set();
-
 /* 
  * Updates the tree view, expands all nodes, and updates the preview.
  */
@@ -118,7 +116,7 @@ function selectNode(key, value, parent) {
             .join(',') : '';
     document.getElementById('required').checked = parent && parent.required && parent.required.indexOf(key) > -1;
     document.getElementById('add-btn').style.display = 'inline-block';
-    document.getElementById('edit-btn').style.display = 'inline-block';
+    document.getElementById('edit-btn').style.display = 'inline-block'; // Ensure edit button is visible
     document.getElementById('delete-btn').style.display = 'inline-block';
     document.getElementById('current-operation').textContent = `${state.currentOperation === 'add' ? 'Adding' : 'Editing'}: ${key}`;
     
@@ -296,37 +294,30 @@ function createNodeObject(nodeKey, type) {
  * and merges any existing children (properties or items) into the new node.
  */
 function updateSchema(newNode, isAddOperation, isRequired) {
-    console.log("updateSchema called with newNode:", newNode, "isAddOperation:", isAddOperation);
     let currentNode = state.currentNode;
     const titleVal = document.getElementById('title').value.trim();
     const pathParts = titleVal.split('.');
     const newKey = pathParts.pop();
-    console.log("Path parts:", pathParts, "New key:", newKey);
     
     if (!isAddOperation) {
         // Edit mode: update parent's property key and merge children.
         let parent = state.parentNode;
         if (!parent || !parent.properties) {
-            console.warn("No parent found for edit. Aborting update.");
             return;
         }
         const oldKey = state.selectedNode.key;
         let oldNode = parent.properties[oldKey];
-        console.log("Old node to merge:", oldNode);
         if (oldNode) {
             if (oldNode.properties && (!newNode.properties || Object.keys(newNode.properties).length === 0)) {
                 newNode.properties = oldNode.properties;
-                console.log("Merged old node properties into new node");
             }
             if (oldNode.items && newNode.type === 'array') {
                 if (!newNode.items || !newNode.items.properties || Object.keys(newNode.items.properties).length === 0) {
                     newNode.items = oldNode.items;
-                    console.log("Merged old node items into new node");
                 }
             }
         }
         if (oldKey !== newKey) {
-            console.log("Key changed from", oldKey, "to", newKey, ". Removing old key.");
             delete parent.properties[oldKey];
         }
         parent.properties[newKey] = newNode;
@@ -334,16 +325,13 @@ function updateSchema(newNode, isAddOperation, isRequired) {
             if (!parent.required) parent.required = [];
             if (!parent.required.includes(newKey)) {
                 parent.required.push(newKey);
-                console.log("Added", newKey, "to required");
             }
         } else if (parent.required) {
             const reqIndex = parent.required.indexOf(oldKey);
             if (reqIndex > -1) {
                 parent.required.splice(reqIndex, 1);
-                console.log("Removed", oldKey, "from required");
             }
         }
-        console.log("Edit update complete. Parent now:", parent);
     } else {
         // Add mode: navigate relative to state.currentNode.
         for (const part of pathParts) {
@@ -364,13 +352,11 @@ function updateSchema(newNode, isAddOperation, isRequired) {
         }
         if (currentNode.type === 'array' && newKey === 'items') {
             currentNode.items = newNode;
-            console.log("Set newNode into currentNode.items");
         } else {
             if (!currentNode.properties) {
                 currentNode.properties = {};
             }
             currentNode.properties[newKey] = newNode;
-            console.log("Set newNode into currentNode.properties for key:", newKey);
         }
         if (state.parentNode) {
             if (isRequired) {
@@ -386,7 +372,6 @@ function updateSchema(newNode, isAddOperation, isRequired) {
             }
         }
     }
-    console.log("updateSchema finished. Current parentNode:", state.parentNode);
 }
 
 /* 
@@ -447,7 +432,7 @@ document.addEventListener('DOMContentLoaded', () => {
 document.getElementById('add-btn').onclick = () => {
     addOrEditNode(true);
 };
-document.getElementById('edit-btn').onclick = () => {
+document.getElementById('top-edit-btn').onclick = () => {
     addOrEditNode(false);
 };
 document.getElementById('delete-btn').onclick = () => {
@@ -489,7 +474,7 @@ function resetForm() {
     document.getElementById('pattern').value = '';
     document.getElementById('item-type').value = '';
     document.getElementById('add-btn').style.display = 'inline-block';
-    document.getElementById('edit-btn').style.display = 'none';
+    document.getElementById('top-edit-btn').style.display = 'inline-block'; // Ensure top edit button is visible
     document.getElementById('delete-btn').style.display = 'none';
     state.selectedNode = null;
     state.parentNode = null;
@@ -668,5 +653,5 @@ function showView(view) {
 // Set default view to 'edit' on load
 showView(state.currentView);
 
-document.getElementById('edit-btn').onclick = () => showView('edit');
+document.getElementById('top-edit-btn').onclick = () => showView('edit');
 document.getElementById('preview-btn').onclick = () => showView('preview');
