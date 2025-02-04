@@ -101,7 +101,7 @@ body {
 }
 
 #preview {
-    height: 50vh;
+    height: calc(100vh - 200px); /* Adjusted height to take full space */
     border-top: 1px solid #ccc;
     padding: 10px;
     overflow-y: auto;
