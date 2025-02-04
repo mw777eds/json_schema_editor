@@ -118,8 +118,11 @@ function selectNode(key, value, parent) {
     document.getElementById('add-btn').style.display = 'inline-block';
     document.getElementById('edit-btn').style.display = 'inline-block'; // Ensure edit button is visible
     document.getElementById('delete-btn').style.display = 'inline-block';
-    document.getElementById('current-operation').textContent = `${state.currentOperation === 'add' ? 'Adding' : 'Editing'}: ${key}`;
-    
+    document.getElementById('current-operation').textContent = `Editing: ${key}`; // Updated to show Editing
+
+    console.log(`Selected node: ${key}`, value); // Logging selected node
+    console.log(`Parent node:`, parent); // Logging parent node
+
     const numberFields = document.getElementById('number-fields');
     const exclusiveNumberFields = document.getElementById('exclusive-number-fields');
     const patternPropertiesFields = document.getElementById('pattern-properties-fields');
