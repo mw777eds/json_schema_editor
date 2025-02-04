@@ -160,7 +160,7 @@ function selectNode(key, value, parent) {
 }
 
 /* 
- * Adds or edits a node.
+ * Adds or edits a node in the schema.
  */
 function addOrEditNode(isAddOperation) {
     const nodeKey = document.getElementById('title').value.trim();
@@ -179,7 +179,7 @@ function addOrEditNode(isAddOperation) {
 }
 
 /* 
- * Validates the input.
+ * Validates the input for a node.
  */
 function validateNodeInput(nodeKey, type, feedback) {
     let missingFields = [];
@@ -295,14 +295,15 @@ function updateSchema(newNode, isAddOperation, isRequired) {
         let oldNode = parent.properties[oldKey];
         console.log("Old node to merge:", oldNode);
         if (oldNode) {
-            // Merge children if not overridden.
-            if (oldNode.properties && !newNode.properties) {
+            if (oldNode.properties && (!newNode.properties || Object.keys(newNode.properties).length === 0)) {
                 newNode.properties = oldNode.properties;
                 console.log("Merged old node properties into new node");
             }
-            if (oldNode.items && !newNode.items) {
-                newNode.items = oldNode.items;
-                console.log("Merged old node items into new node");
+            if (oldNode.items && newNode.type === 'array') {
+                if (!newNode.items || !newNode.items.properties || Object.keys(newNode.items.properties).length === 0) {
+                    newNode.items = oldNode.items;
+                    console.log("Merged old node items into new node");
+                }
             }
         }
         if (oldKey !== newKey) {
@@ -310,7 +311,6 @@ function updateSchema(newNode, isAddOperation, isRequired) {
             delete parent.properties[oldKey];
         }
         parent.properties[newKey] = newNode;
-        // Update parent's required array.
         if (isRequired) {
             if (!parent.required) parent.required = [];
             if (!parent.required.includes(newKey)) {
@@ -345,11 +345,13 @@ function updateSchema(newNode, isAddOperation, isRequired) {
         }
         if (currentNode.type === 'array' && newKey === 'items') {
             currentNode.items = newNode;
+            console.log("Set newNode into currentNode.items");
         } else {
             if (!currentNode.properties) {
                 currentNode.properties = {};
             }
             currentNode.properties[newKey] = newNode;
+            console.log("Set newNode into currentNode.properties for key:", newKey);
         }
         if (state.parentNode) {
             if (isRequired) {
@@ -365,7 +367,6 @@ function updateSchema(newNode, isAddOperation, isRequired) {
             }
         }
     }
-
     console.log("updateSchema finished. Current parentNode:", state.parentNode);
 }
 
