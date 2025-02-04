@@ -637,15 +637,18 @@ function showView(view) {
     const editorSection = document.getElementById('editor');
     const treeViewSection = document.getElementById('tree-view');
     const previewSection = document.getElementById('preview');
+    const mainContent = document.getElementById('main-content'); // Reference to the main section
 
     if (view === 'edit') {
         editorSection.style.display = 'block';
         treeViewSection.style.display = 'block';
         previewSection.style.display = 'none';
+        mainContent.style.display = 'flex'; // Show the main content
     } else if (view === 'preview') {
         editorSection.style.display = 'none';
         treeViewSection.style.display = 'none';
         previewSection.style.display = 'block';
+        mainContent.style.display = 'none'; // Hide the main content
     }
     state.currentView = view; // Update the current view state
 }
