@@ -195,11 +195,9 @@ function addOrEditNode(isAddOperation) {
     const type = document.getElementById('type').value;
     const feedback = document.getElementById('validation-feedback');
     const isRequired = document.getElementById('required').checked;
-    console.log(`Adding/Editing node: ${nodeKey}, Type: ${type}, Is Required: ${isRequired}`);
     if (!validateNodeInput(nodeKey, type, feedback)) return;
     
     const newNode = createNodeObject(nodeKey, type);
-    console.log("New node created:", JSON.stringify(newNode, null, 2));
     updateSchema(newNode, isAddOperation, isRequired);
     updateTreeView();
     validateSchema();
@@ -217,10 +215,8 @@ function validateNodeInput(nodeKey, type, feedback) {
         feedback.textContent = `${missingFields.join(' and ')} ${missingFields.length > 1 ? 'are' : 'is'} required.`;
         feedback.style.display = 'inline';
         setTimeout(() => feedback.style.display = 'none', 2000);
-        console.log("Validation failed:", missingFields);
         return false;
     }
-    console.log("Validation passed for:", nodeKey);
     return true;
 }
 
@@ -235,7 +231,6 @@ function createNodeObject(nodeKey, type) {
     const pattern = document.getElementById('pattern').value;
     
     let newNode = { description, type };
-    console.log("Creating node object:", JSON.stringify(newNode, null, 2));
 
     if (type === 'boolean') {
         if (defaultValue.toLowerCase() === 'true' || defaultValue === '1') {
@@ -298,7 +293,6 @@ function createNodeObject(nodeKey, type) {
         }
     }
     
-    console.log("Node object created:", JSON.stringify(newNode, null, 2));
     return newNode;
 }
 
@@ -313,13 +307,11 @@ function updateSchema(newNode, isAddOperation, isRequired) {
     const pathParts = titleVal.split('.');
     const newKey = pathParts.pop();
     
-    console.log("Updating schema. Is Add Operation:", isAddOperation, "New Key:", newKey);
     
     if (!isAddOperation) {
         // Edit mode: update parent's property key and merge children.
         let parent = state.parentNode;
         if (!parent || !parent.properties) {
-            console.log("No parent or properties found.");
             return;
         }
         const oldKey = state.selectedNode.key;
@@ -335,7 +327,6 @@ function updateSchema(newNode, isAddOperation, isRequired) {
             }
         }
         if (oldKey !== newKey) {
-            console.log(`Changing key from ${oldKey} to ${newKey}`);
             delete parent.properties[oldKey];
         }
         parent.properties[newKey] = newNode;
@@ -394,7 +385,6 @@ function updateSchema(newNode, isAddOperation, isRequired) {
 
     // Update the schema ID with the value from the input field
     schema.$id = document.getElementById('schema-id').value; // Ensure the $id is updated
-    console.log("Schema updated:", JSON.stringify(schema, null, 2));
 }
 
 /* 
@@ -426,7 +416,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     typeSelect.addEventListener('change', () => {
         const selectedType = typeSelect.value;
-        console.log("Type selected:", selectedType);
         numberFields.style.display = selectedType === 'number' ? 'flex' : 'none';
         exclusiveNumberFields.style.display = selectedType === 'number' ? 'flex' : 'none';
         stringFields.style.display = selectedType === 'string' ? 'flex' : 'none';
@@ -454,15 +443,12 @@ document.addEventListener('DOMContentLoaded', () => {
  * Event listeners for the Add, Edit, and Delete buttons.
  */
 document.getElementById('add-btn').onclick = () => {
-    console.log("Add button clicked");
     addOrEditNode(true);
 };
 document.getElementById('edit-btn').onclick = () => {
-    console.log("Edit button clicked");
     addOrEditNode(false);
 };
 document.getElementById('delete-btn').onclick = () => {
-    console.log("Delete button clicked");
     if (state.selectedNode && state.parentNode) {
         delete state.parentNode.properties[state.selectedNode.key];
         if (state.parentNode.required) {
@@ -481,7 +467,6 @@ document.getElementById('delete-btn').onclick = () => {
  * Resets the form fields.
  */
 function resetForm() {
-    console.log("Resetting form fields");
     document.getElementById('title').value = '';
     document.getElementById('description').value = '';
     document.getElementById('type').value = '';
@@ -522,7 +507,6 @@ function validateSchema() {
     } catch (error) {
         feedback.textContent = 'Error: Invalid JSON schema.';
         feedback.classList.add('error');
-        console.log("Schema validation error:", error);
     }
 }
 
@@ -531,13 +515,11 @@ function validateSchema() {
  */
 document.getElementById('save-btn').onclick = () => {
     const schemaString = safeStringify(schema);
-    console.log("Saving schema:", schemaString);
     if (typeof window.FileMaker !== 'undefined') {
         try {
             window.FileMaker.PerformScript('SaveJSONSchema', schemaString);
         } catch (err) {
             alert('Failed to save JSON schema. Please check the console for more details.');
-            console.log("Error saving schema:", err);
         }
     } else {
         alert('FileMaker integration is not available. The schema cannot be saved.');
@@ -591,7 +573,6 @@ document.getElementById('format-btn').onclick = () => {
  */
 document.getElementById('copy-btn').onclick = async () => {
     const schemaString = JSON.stringify(schema);
-    console.log("Copying schema to clipboard:", schemaString);
     try {
         await navigator.clipboard.writeText(schemaString);
         const copyFeedback = document.getElementById('copy-feedback');
@@ -609,7 +590,6 @@ document.getElementById('copy-btn').onclick = async () => {
  */
 document.getElementById('schema-id').onchange = (e) => {
     schema.$id = e.target.value; // Update the schema ID
-    console.log("Schema ID updated:", schema.$id);
     updatePreview();
 };
 
@@ -620,7 +600,6 @@ function applySchemaFromString(pastedSchema) {
     const feedback = document.getElementById('paste-feedback');
     try {
         const parsedSchema = JSON.parse(pastedSchema);
-        console.log("Parsed schema:", JSON.stringify(parsedSchema, null, 2));
         if (typeof parsedSchema === 'object' && parsedSchema !== null) {
             schema = parsedSchema;
             document.getElementById('schema-version').value = schema.$schema || '';
@@ -640,7 +619,6 @@ function applySchemaFromString(pastedSchema) {
     } catch (error) {
         feedback.textContent = `Error: ${error.message}`;
         feedback.classList.add('error');
-        console.log("Error applying schema:", error);
     }
 }
 
@@ -650,7 +628,6 @@ function applySchemaFromString(pastedSchema) {
 document.getElementById('toggle-schema-options').onclick = () => {
     const schemaOptions = document.getElementById('schema-options');
     schemaOptions.style.display = schemaOptions.style.display === 'none' ? 'block' : 'none';
-    console.log("Toggled schema options visibility:", schemaOptions.style.display);
 };
 
 /* 
@@ -677,13 +654,11 @@ function showView(view) {
     const mainContent = document.getElementById('main-content'); // Reference to the main section
 
     if (view === 'edit') {
-        console.log("Switching to edit view");
         editorSection.style.display = 'block';
         treeViewSection.style.display = 'block';
         previewSection.style.display = 'none';
         mainContent.style.display = 'flex'; // Show the main content
     } else if (view === 'preview') {
-        console.log("Switching to preview view");
         editorSection.style.display = 'none';
         treeViewSection.style.display = 'none';
         previewSection.style.display = 'block';
@@ -696,10 +671,8 @@ function showView(view) {
 showView(state.currentView);
 
 document.getElementById('top-edit-btn').onclick = () => {
-    console.log("Top Edit button clicked");
     showView('edit');
 };
 document.getElementById('preview-btn').onclick = () => {
-    console.log("Preview button clicked");
     showView('preview');
 };
