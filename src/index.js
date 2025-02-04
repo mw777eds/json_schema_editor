@@ -612,6 +612,7 @@ function applySchemaFromString(pastedSchema) {
             }, 2000);
             feedback.classList.remove('error');
             document.getElementById('paste-schema').value = '';
+            resetForm();
         } else {
             throw new Error('Invalid JSON schema structure');
         }
