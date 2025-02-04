@@ -56,10 +56,12 @@ function renderNode(node, parentElement, key, parent) {
     contentElement.classList.add('tree-node-content');
     contentElement.textContent = `${key}: ${node.type || typeof node}`;
     nodeElement.setAttribute('data-key', key);
+
     contentElement.onclick = (e) => {
         e.stopPropagation();
         selectNode(key, node, parent);
     };
+
     nodeElement.appendChild(contentElement);
     parentElement.appendChild(nodeElement);
 
@@ -96,8 +98,9 @@ function renderNode(node, parentElement, key, parent) {
  * Selects a node in the tree view and populates the form.
  */
 function selectNode(key, value, parent) {
+    console.log("selectNode called for key:", key, "value:", value, "parent:", parent);
     state.selectedNode = { key, value, parent };
-    // For top-level editing, parent may be null. In that case, set parentNode to currentNode.
+    // For top-level editing, if parent is null, set parentNode to currentNode.
     state.parentNode = parent ? parent : state.currentNode;
     state.currentNode = value;
     document.getElementById('title').value = key;
@@ -116,7 +119,7 @@ function selectNode(key, value, parent) {
     document.getElementById('edit-btn').style.display = 'inline-block';
     document.getElementById('delete-btn').style.display = 'inline-block';
     document.getElementById('current-operation').textContent = `${state.currentOperation === 'add' ? 'Adding' : 'Editing'}: ${key}`;
-
+    
     const numberFields = document.getElementById('number-fields');
     const exclusiveNumberFields = document.getElementById('exclusive-number-fields');
     const patternPropertiesFields = document.getElementById('pattern-properties-fields');
@@ -157,14 +160,13 @@ function selectNode(key, value, parent) {
 }
 
 /* 
- * Adds or edits a node in the schema.
+ * Adds or edits a node.
  */
 function addOrEditNode(isAddOperation) {
     const nodeKey = document.getElementById('title').value.trim();
     const type = document.getElementById('type').value;
     const feedback = document.getElementById('validation-feedback');
     const isRequired = document.getElementById('required').checked;
-    
     console.log("addOrEditNode called with", { nodeKey, type, isAddOperation, isRequired });
     if (!validateNodeInput(nodeKey, type, feedback)) return;
     
@@ -177,7 +179,7 @@ function addOrEditNode(isAddOperation) {
 }
 
 /* 
- * Validates the input for a node.
+ * Validates the input.
  */
 function validateNodeInput(nodeKey, type, feedback) {
     let missingFields = [];
@@ -271,48 +273,29 @@ function createNodeObject(nodeKey, type) {
 
 /* 
  * Updates the schema with the new node.
- * Navigates into currentNode.properties by default, but for arrays with key "items"
- * goes into currentNode.items.
- * For edit operations, it merges the new node with existing children.
+ * In edit mode, this function updates the parent's property key (if changed)
+ * and merges any existing children (properties or items) into the new node.
  */
 function updateSchema(newNode, isAddOperation, isRequired) {
     console.log("updateSchema called with newNode:", newNode, "isAddOperation:", isAddOperation);
     let currentNode = state.currentNode;
-    const pathParts = document.getElementById('title').value.split('.');
-    const lastPart = pathParts.pop();
-    console.log("Path parts:", pathParts, "Last part:", lastPart);
+    const titleVal = document.getElementById('title').value.trim();
+    const pathParts = titleVal.split('.');
+    const newKey = pathParts.pop();
+    console.log("Path parts:", pathParts, "New key:", newKey);
     
-    for (const part of pathParts) {
-        if (currentNode.type === 'array' && part === 'items') {
-            if (!currentNode.items) {
-                console.log("Creating missing items object in array for part:", part);
-                currentNode.items = { type: 'object', properties: {}, required: [] };
-            }
-            currentNode = currentNode.items;
-        } else {
-            if (!currentNode.properties) {
-                console.log("Creating missing properties for current node");
-                currentNode.properties = {};
-            }
-            if (!currentNode.properties[part]) {
-                console.log("Creating new object node for part:", part);
-                currentNode.properties[part] = { type: 'object', properties: {}, additionalProperties: false };
-            }
-            currentNode = currentNode.properties[part];
-        }
-    }
-    console.log("After navigation, currentNode:", currentNode);
-    
-    // For edit, merge new node with existing children.
     if (!isAddOperation) {
-        let oldNode;
-        if (state.parentNode && state.selectedNode) {
-            oldNode = state.parentNode.properties[state.selectedNode.key];
-        } else {
-            oldNode = currentNode;
+        // Edit mode: update parent's property key and merge children.
+        let parent = state.parentNode;
+        if (!parent || !parent.properties) {
+            console.warn("No parent found for edit. Aborting update.");
+            return;
         }
+        const oldKey = state.selectedNode.key;
+        let oldNode = parent.properties[oldKey];
         console.log("Old node to merge:", oldNode);
         if (oldNode) {
+            // Merge children if not overridden.
             if (oldNode.properties && !newNode.properties) {
                 newNode.properties = oldNode.properties;
                 console.log("Merged old node properties into new node");
@@ -321,55 +304,69 @@ function updateSchema(newNode, isAddOperation, isRequired) {
                 newNode.items = oldNode.items;
                 console.log("Merged old node items into new node");
             }
-            // Only remove the old key if state.parentNode exists.
-            if (state.parentNode && state.selectedNode && state.selectedNode.key !== lastPart) {
-                console.log("Key changed from", state.selectedNode.key, "to", lastPart, ". Removing old key.");
-                delete state.parentNode.properties[state.selectedNode.key];
+        }
+        if (oldKey !== newKey) {
+            console.log("Key changed from", oldKey, "to", newKey, ". Removing old key.");
+            delete parent.properties[oldKey];
+        }
+        parent.properties[newKey] = newNode;
+        // Update parent's required array.
+        if (isRequired) {
+            if (!parent.required) parent.required = [];
+            if (!parent.required.includes(newKey)) {
+                parent.required.push(newKey);
+                console.log("Added", newKey, "to required");
             }
-            if (state.parentNode && state.parentNode.required) {
-                const requiredIndex = state.parentNode.required.indexOf(state.selectedNode.key);
-                if (requiredIndex > -1) {
-                    state.parentNode.required.splice(requiredIndex, 1);
+        } else if (parent.required) {
+            const reqIndex = parent.required.indexOf(oldKey);
+            if (reqIndex > -1) {
+                parent.required.splice(reqIndex, 1);
+                console.log("Removed", oldKey, "from required");
+            }
+        }
+        console.log("Edit update complete. Parent now:", parent);
+    } else {
+        // Add mode: navigate relative to state.currentNode.
+        for (const part of pathParts) {
+            if (currentNode.type === 'array' && part === 'items') {
+                if (!currentNode.items) {
+                    currentNode.items = { type: 'object', properties: {}, required: [] };
+                }
+                currentNode = currentNode.items;
+            } else {
+                if (!currentNode.properties) {
+                    currentNode.properties = {};
+                }
+                if (!currentNode.properties[part]) {
+                    currentNode.properties[part] = { type: 'object', properties: {}, additionalProperties: false };
+                }
+                currentNode = currentNode.properties[part];
+            }
+        }
+        if (currentNode.type === 'array' && newKey === 'items') {
+            currentNode.items = newNode;
+        } else {
+            if (!currentNode.properties) {
+                currentNode.properties = {};
+            }
+            currentNode.properties[newKey] = newNode;
+        }
+        if (state.parentNode) {
+            if (isRequired) {
+                if (!state.parentNode.required) state.parentNode.required = [];
+                if (!state.parentNode.required.includes(newKey)) {
+                    state.parentNode.required.push(newKey);
+                }
+            } else if (state.parentNode.required) {
+                const reqIndex = state.parentNode.required.indexOf(newKey);
+                if (reqIndex > -1) {
+                    state.parentNode.required.splice(reqIndex, 1);
                 }
             }
         }
     }
-    
-    if (currentNode.type === 'array' && lastPart === 'items') {
-        currentNode.items = newNode;
-        console.log("Set newNode into currentNode.items");
-    } else {
-        if (!currentNode.properties) {
-            currentNode.properties = {};
-        }
-        currentNode.properties[lastPart] = newNode;
-        console.log("Set newNode into currentNode.properties for key:", lastPart);
-    }
-    
-    if (!state.parentNode) {
-        state.parentNode = currentNode;
-        console.log("state.parentNode was null, setting to currentNode");
-    }
-    
-    if (state.parentNode) {
-        if (isRequired) {
-            if (!state.parentNode.required) state.parentNode.required = [];
-            if (!state.parentNode.required.includes(lastPart)) {
-                state.parentNode.required.push(lastPart);
-                console.log("Added", lastPart, "to required");
-            }
-        } else if (state.parentNode.required) {
-            const requiredIndex = state.parentNode.required.indexOf(lastPart);
-            if (requiredIndex > -1) {
-                state.parentNode.required.splice(requiredIndex, 1);
-                console.log("Removed", lastPart, "from required");
-            }
-        }
-    } else {
-        console.warn("state.parentNode is null when updating required fields");
-    }
-    
-    console.log("updateSchema finished. Current state.parentNode:", state.parentNode);
+
+    console.log("updateSchema finished. Current parentNode:", state.parentNode);
 }
 
 /* 
@@ -430,14 +427,13 @@ document.getElementById('add-btn').onclick = () => {
 document.getElementById('edit-btn').onclick = () => {
     addOrEditNode(false);
 };
-
 document.getElementById('delete-btn').onclick = () => {
     if (state.selectedNode && state.parentNode) {
         delete state.parentNode.properties[state.selectedNode.key];
         if (state.parentNode.required) {
-            const requiredIndex = state.parentNode.required.indexOf(state.selectedNode.key);
-            if (requiredIndex > -1) {
-                state.parentNode.required.splice(requiredIndex, 1);
+            const index = state.parentNode.required.indexOf(state.selectedNode.key);
+            if (index > -1) {
+                state.parentNode.required.splice(index, 1);
             }
         }
         updateTreeView();
@@ -568,7 +564,7 @@ document.getElementById('copy-btn').onclick = async () => {
 };
 
 /* 
- * Updates the schema ID when input changes.
+ * Updates the schema ID on input change.
  */
 document.getElementById('schema-id').onchange = (e) => {
     schema.$id = e.target.value;
@@ -605,7 +601,7 @@ function applySchemaFromString(pastedSchema) {
 }
 
 /* 
- * Toggles schema options visibility.
+ * Toggles the visibility of schema options.
  */
 document.getElementById('toggle-schema-options').onclick = () => {
     const schemaOptions = document.getElementById('schema-options');
@@ -619,9 +615,7 @@ function safeStringify(obj) {
     const seen = new WeakSet();
     return JSON.stringify(obj, (key, value) => {
         if (typeof value === "object" && value !== null) {
-            if (seen.has(value)) {
-                return;
-            }
+            if (seen.has(value)) return;
             seen.add(value);
         }
         return value;
