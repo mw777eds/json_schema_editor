@@ -64,6 +64,7 @@ body {
     flex-direction: row;
     height: 50vh;
     margin-bottom: 20px;
+    border-top: 1px solid #ccc; /* Added border-top */
 }
 
 @media (max-width: 768px) {
