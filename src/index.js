@@ -21,7 +21,7 @@ let state = {
     selectedNode: null,
     parentNode: null,
     currentOperation: 'add',
-    isFormatted: true,
+    isFormatted: true, // Set to true as the JSON is formatted
     currentView: 'edit' // Default view is 'edit'
 };
 
