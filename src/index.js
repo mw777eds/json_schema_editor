@@ -372,6 +372,9 @@ function updateSchema(newNode, isAddOperation, isRequired) {
             }
         }
     }
+
+    // Update the schema ID with the value from the input field
+    schema.$id = document.getElementById('schema-id').value; // Ensure the $id is updated
 }
 
 /* 
@@ -576,7 +579,7 @@ document.getElementById('copy-btn').onclick = async () => {
  * Updates the schema ID when the input changes.
  */
 document.getElementById('schema-id').onchange = (e) => {
-    schema.$id = e.target.value;
+    schema.$id = e.target.value; // Update the schema ID
     updatePreview();
 };
 
@@ -590,7 +593,7 @@ function applySchemaFromString(pastedSchema) {
         if (typeof parsedSchema === 'object' && parsedSchema !== null) {
             schema = parsedSchema;
             document.getElementById('schema-version').value = schema.$schema || '';
-            document.getElementById('schema-id').value = schema.$id || '';
+            document.getElementById('schema-id').value = schema.$id || ''; // Update the schema ID
             updateTreeView();
             const applyFeedback = document.getElementById('apply-feedback');
             applyFeedback.style.display = 'inline';
