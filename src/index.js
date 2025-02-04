@@ -99,7 +99,6 @@ function renderNode(node, parentElement, key, parent) {
  * Additionally, if the selected node is an array, the item-type selection is prepopulated.
  */
 function selectNode(key, value, parent) {
-    console.log("selectNode called for key:", key, "value:", value, "parent:", parent);
     state.selectedNode = { key, value, parent };
     state.parentNode = parent ? parent : state.currentNode;
     state.currentNode = value;
@@ -189,11 +188,9 @@ function addOrEditNode(isAddOperation) {
     const type = document.getElementById('type').value;
     const feedback = document.getElementById('validation-feedback');
     const isRequired = document.getElementById('required').checked;
-    console.log("addOrEditNode called with", { nodeKey, type, isAddOperation, isRequired });
     if (!validateNodeInput(nodeKey, type, feedback)) return;
     
     const newNode = createNodeObject(nodeKey, type);
-    console.log("New node created:", newNode);
     updateSchema(newNode, isAddOperation, isRequired);
     updateTreeView();
     validateSchema();
@@ -289,7 +286,6 @@ function createNodeObject(nodeKey, type) {
         }
     }
     
-    console.log("createNodeObject returning:", newNode);
     return newNode;
 }
 
@@ -587,7 +583,7 @@ document.getElementById('copy-btn').onclick = async () => {
 };
 
 /* 
- * Updates the schema ID when the input changes.
+ * Updates the schema ID when input changes.
  */
 document.getElementById('schema-id').onchange = (e) => {
     schema.$id = e.target.value;
