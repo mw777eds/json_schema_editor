@@ -1,25 +1,43 @@
-# JS Dev Kit for FileMaker Developers
+# JSON Schema Editor for FileMaker LLM Integration
 
-*Develop, Render, and Deploy JavaScript for a FileMaker App*
+*A visual editor for creating and managing JSON schemas for LLM tool calls within FileMaker*
 
-# This Kit
-## What it does
-This environment allows a FileMaker developer to start coding their widget and see the results right away in a FileMaker file. Once done developing, the can be inlined and pushed to the FileMaker file for use offline.
-<br/>
-It's a template file, so you can use to start other projects.
-## Consists of
-- A repository template on Github
-- A basic html / JS set up.
-- package.json file for install
-- A FileMaker file to show the widget rendered
-- Scripts to build and upload the inlined code to FileMaker
-## TO GET STARTED Using this file
-1. `npm install`
-2. `npm start`
-3. Open the jsDev.fmp12 file.
-4. Allow it to work in Dev mode.
+## What It Does
+This tool provides a user-friendly interface for FileMaker developers to create and edit JSON schemas that define the structure of LLM tool calls. It runs directly in a FileMaker web viewer, making it seamlessly integrated with your FileMaker development environment.
 
-At this point you should see the web viewer on the layout load up with the HTML and JavaScript here. Edit the JavaScript or the HTML and you'll see the render in the web viewer update.
+## Key Features
+- Visual tree-based schema editor
+- Real-time JSON preview with syntax highlighting
+- Support for all JSON Schema data types
+- Pattern properties and validation
+- Copy and paste functionality
+- Direct integration with FileMaker scripts
+- Schema validation
+- Support for JSON Schema Draft 2020-12
 
-## Use this kit
-Now you're ready to use this kit to create awesome JS widgets.
+## Getting Started
+1. Open the FileMaker file containing the web viewer
+2. Navigate to the JSON Schema Editor layout
+3. Start building your schema using the visual interface
+4. Preview and validate your schema in real-time
+5. Save directly to your FileMaker solution
+
+## Usage
+- Use the "Edit" view to build and modify your schema
+- Switch to "Preview" to see the formatted JSON output
+- Copy the schema directly to your clipboard
+- Save the schema to your FileMaker solution
+- Paste existing schemas to modify them
+
+## Schema Support
+Supports all major JSON Schema features including:
+- Objects and nested properties
+- Arrays with item definitions
+- String patterns and enums
+- Numeric ranges and constraints
+- Required properties
+- Default values
+- Pattern properties
+
+## Integration
+The editor integrates directly with FileMaker through the web viewer interface and can save schemas directly to your FileMaker solution for use in LLM tool call configurations.
