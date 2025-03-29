@@ -137,6 +137,9 @@ function testStringNodeCreationAndEdit() {
     });
     window.addOrEditNode(true); // Add node
 
+    // Debug the schema to see what's happening
+    console.log("Schema after adding string node:", JSON.stringify(window.schema));
+    
     let addedNode = window.schema.properties.testString;
     assert(addedNode, 'String node "testString" should be added');
     assert(addedNode.type === 'string', 'String node type should be "string"');

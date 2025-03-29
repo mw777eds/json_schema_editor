@@ -13,7 +13,7 @@ let schema = {
 let state = {
     currentNode: schema,
     selectedNode: null,
-    parentNode: null,
+    parentNode: schema, // Set parent to schema by default
     currentOperation: 'add',
     isFormatted: true,
     currentView: 'edit'
@@ -22,6 +22,9 @@ let state = {
 // Expose schema and state for testing
 window.schema = schema;
 window.state = state;
+
+// Log initial state
+console.log("Initial schema:", JSON.stringify(schema));
 
 // Mock DOM elements for testing
 function createMockDOM() {
@@ -142,7 +145,12 @@ function createNodeObject(nodeKey, type) {
     const defaultValue = document.getElementById('default').value;
     const pattern = document.getElementById('pattern').value;
     
-    let newNode = { description, type };
+    let newNode = { type };
+    
+    // Only add description if it's not empty
+    if (description) {
+        newNode.description = description;
+    }
     
     // Handle default values
     if (type === 'boolean') {
@@ -214,13 +222,24 @@ function updateSchema(newNode, isAddOperation, isRequired) {
     const pathParts = titleVal.split('.');
     const newKey = pathParts.pop();
     
-    let parentNode = schema;
+    // Ensure we're working with the global schema object
+    if (!window.schema) {
+        window.schema = {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false,
+            "$schema": "https://json-schema.org/draft/2020-12/schema"
+        };
+    }
+    
+    let parentNode = window.schema;
     
     if (!isAddOperation && state.parentNode) {
         parentNode = state.parentNode;
     } else {
         // For add operation, traverse the path to find the parent
-        let currentPathNode = schema;
+        let currentPathNode = window.schema;
         for (const part of pathParts) {
             if (currentPathNode.type === 'object') {
                 if (!currentPathNode.properties) currentPathNode.properties = {};
@@ -247,7 +266,7 @@ function updateSchema(newNode, isAddOperation, isRequired) {
         }
     }
     
-    const oldKey = isAddOperation ? null : state.selectedNode.key;
+    const oldKey = isAddOperation ? null : state.selectedNode?.key;
     
     if (parentNode.type === 'object') {
         if (!parentNode.properties) parentNode.properties = {};
@@ -275,6 +294,9 @@ function updateSchema(newNode, isAddOperation, isRequired) {
         
         // Add/update the property
         parentNode.properties[newKey] = newNode;
+        
+        // Debug log to help diagnose issues
+        console.log(`Added/updated property "${newKey}" to schema:`, JSON.stringify(parentNode.properties[newKey]));
         
         // Update required array
         if (!parentNode.required) parentNode.required = [];
