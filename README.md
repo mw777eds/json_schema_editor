@@ -8,8 +8,15 @@ This tool provides a user-friendly interface for FileMaker developers to create 
 ## Key Features
 - Visual tree-based schema editor
 - Real-time JSON preview with syntax highlighting
-- Support for all JSON Schema data types
-- Pattern properties and validation
+- Support for all JSON Schema data types (string, number, boolean, object, array)
+- Nested property creation and editing
+- Required property flagging
+- Type-specific constraints and validations:
+  - String: minLength, maxLength, pattern, enum, default
+  - Number: minimum, maximum, exclusiveMinimum, exclusiveMaximum, enum, default
+  - Boolean: default values
+  - Array: minItems, maxItems, item type definition
+  - Object: minProperties, maxProperties, pattern properties
 - Copy and paste functionality
 - Direct integration with FileMaker scripts
 - Schema validation
@@ -29,6 +36,53 @@ This tool provides a user-friendly interface for FileMaker developers to create 
 - Save the schema to your FileMaker solution
 - Paste existing schemas to modify them
 
+## Development Setup
+
+### Prerequisites
+- Node.js (v14 or higher)
+- npm (v6 or higher)
+
+### Installation
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/json-schema-editor.git
+cd json-schema-editor
+
+# Install dependencies
+npm install
+```
+
+### Development
+```bash
+# Start the development server
+npm start
+
+# This will launch the application at http://localhost:3000
+```
+
+### Testing
+The project includes comprehensive tests to ensure functionality works correctly:
+
+```bash
+# Run the automated tests in the browser
+npm test
+
+# This will open test-runner.html in your default browser
+```
+
+You can also run individual test suites from the test runner interface:
+- String node tests
+- Number node tests
+- Array node tests
+- Object node tests
+- Nested node tests
+
+### Building for Production
+```bash
+# Create a production build
+npm run build
+```
+
 ## Schema Support
 Supports all major JSON Schema features including:
 - Objects and nested properties
@@ -41,3 +95,15 @@ Supports all major JSON Schema features including:
 
 ## Integration
 The editor integrates directly with FileMaker through the web viewer interface and can save schemas directly to your FileMaker solution for use in LLM tool call configurations.
+
+## Project Structure
+- `src/` - Source code for the editor
+  - `index.js` - Main application logic
+  - `style.css` - Styling for the editor
+- `test/` - Test files
+  - `test.js` - Test cases for all functionality
+  - `test-index.js` - Test-specific version of the main code
+  - `test-runner.html` - Browser-based test runner
+
+## Contributing
+Contributions are welcome! Please feel free to submit a Pull Request.
