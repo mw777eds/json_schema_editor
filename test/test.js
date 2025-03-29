@@ -12,10 +12,22 @@ window.testObjectNodeCreationAndEdit = testObjectNodeCreationAndEdit;
 window.testNestedNodeCreation = testNestedNodeCreation;
 window.reportResults = reportResults;
 
+// Initialize the results element
+let resultsElement = null;
+
 function assert(condition, message) {
     testsRun++;
     window.testsRun = testsRun;
-    const resultsElement = document.getElementById('test-results');
+    
+    // Get or initialize the results element
+    if (!resultsElement) {
+        resultsElement = document.getElementById('test-results');
+        if (!resultsElement) {
+            console.error("Test results element not found");
+            return;
+        }
+    }
+    
     const div = document.createElement('div');
     if (condition) {
         testsPassed++;
@@ -31,7 +43,15 @@ function assert(condition, message) {
 }
 
 function reportResults() {
-    const resultsElement = document.getElementById('test-results');
+    // Get or initialize the results element
+    if (!resultsElement) {
+        resultsElement = document.getElementById('test-results');
+        if (!resultsElement) {
+            console.error("Test results element not found");
+            return;
+        }
+    }
+    
     const summary = document.createElement('h3');
     summary.textContent = `Tests completed: ${testsPassed} / ${testsRun} passed.`;
     resultsElement.appendChild(summary);
@@ -60,29 +80,42 @@ function setFormValues(values) {
 
 // Helper function to reset the schema and state for tests
 function resetTestState() {
-    // Access schema and state via window as they are not directly exported
+    // Wait for window.schema and window.state to be defined
+    if (!window.schema || !window.state) {
+        console.warn("Waiting for schema and state to be initialized...");
+        setTimeout(resetTestState, 100);
+        return;
+    }
+    
+    // Reset schema to initial state
     window.schema = {
         "type": "object",
         "properties": {},
         "required": [],
         "$schema": "https://json-schema.org/draft/2020-12/schema"
     };
+    
+    // Reset state to initial values
     window.state = {
         currentNode: window.schema,
         selectedNode: null,
-        parentNode: null, // Should be root initially
+        parentNode: null,
         currentOperation: 'add',
         isFormatted: true,
         currentView: 'edit'
     };
-     // Ensure the form is reset visually and functionally
-    if (window.resetForm) {
+    
+    // Reset the form if the function is available
+    if (typeof window.resetForm === 'function') {
         window.resetForm();
     } else {
         console.error("resetForm function not found on window.");
     }
-    // Reset tree view and preview if needed (optional for logic tests)
-    // if (window.updateTreeView) window.updateTreeView();
+    
+    // Initialize resultsElement if needed
+    if (!resultsElement) {
+        resultsElement = document.getElementById('test-results');
+    }
 }
 
 // --- Test Cases ---
@@ -345,29 +378,52 @@ function testNestedNodeCreation() {
 
 // Run tests after DOM is ready and scripts are loaded
 document.addEventListener('DOMContentLoaded', () => {
-    // Need a slight delay to ensure the module script has initialized
+    // Initialize resultsElement
+    resultsElement = document.getElementById('test-results');
+    if (!resultsElement) {
+        console.error("Test results element not found");
+        return;
+    }
+    
+    // Need a longer delay to ensure the test-index.js has fully initialized
     setTimeout(() => {
         // Check if necessary functions are available on window
-        if (typeof window.addOrEditNode !== 'function' || typeof window.selectNode !== 'function' || typeof window.resetForm !== 'function') {
-             console.error("Required functions (addOrEditNode, selectNode, resetForm) not found on window object. Ensure src/index.js exposes them or adjust test setup.");
-             resultsElement.innerHTML = '<div class="test-fail">Test setup error: Required functions not found. Check console.</div>';
-             return;
+        if (typeof window.addOrEditNode !== 'function' || 
+            typeof window.selectNode !== 'function' || 
+            typeof window.resetForm !== 'function') {
+            
+            console.error("Required functions not found on window object. Waiting longer...");
+            
+            // Try again with a longer delay
+            setTimeout(() => {
+                if (typeof window.addOrEditNode !== 'function' || 
+                    typeof window.selectNode !== 'function' || 
+                    typeof window.resetForm !== 'function') {
+                    
+                    resultsElement.innerHTML = '<div class="test-fail">Test setup error: Required functions not found after waiting. Check console.</div>';
+                    return;
+                } else {
+                    runTests();
+                }
+            }, 500);
+        } else {
+            runTests();
         }
-
-        try {
-            testStringNodeCreationAndEdit();
-            testNumberNodeCreationAndEdit();
-            testArrayNodeCreationAndEdit();
-            testObjectNodeCreationAndEdit();
-            testNestedNodeCreation();
-        } catch (error) {
-            console.error("Error during test execution:", error);
-            const div = document.createElement('div');
-            div.textContent = `FATAL ERROR during tests: ${error.message}`;
-            div.className = 'test-fail';
-            resultsElement.appendChild(div);
-        } finally {
-            reportResults();
-        }
-    }, 100); // Adjust delay if needed
+    }, 300);
 });
+
+// Function to run all tests
+function runTests() {
+    try {
+        resetTestState();
+        
+        // Don't auto-run tests, let the user click the buttons instead
+        resultsElement.innerHTML = '<div>Click a button above to run tests</div>';
+    } catch (error) {
+        console.error("Error during test setup:", error);
+        const div = document.createElement('div');
+        div.textContent = `FATAL ERROR during test setup: ${error.message}`;
+        div.className = 'test-fail';
+        resultsElement.appendChild(div);
+    }
+}
