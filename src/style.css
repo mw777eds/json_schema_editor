@@ -183,8 +183,14 @@ body {
 }
 
 #schema-form input[type="text"],
+#schema-form textarea,
 #schema-form select {
     width: 250px;
+}
+
+#schema-form textarea {
+    resize: vertical;
+    min-height: 80px;
 }
 
 .pattern-wrapper {
