@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Schema Editor Tests</title>
+    <link rel="stylesheet" href="../src/style.css">
+    <style>
+        body { padding: 20px; overflow: auto; }
+        #test-results { margin-top: 20px; border-top: 1px solid #ccc; padding-top: 10px; }
+        .test-pass { color: green; }
+        .test-fail { color: red; font-weight: bold; }
+        #app-container { display: none; } /* Hide the actual UI */
+    </style>
+</head>
+<body>
+    <h1>JSON Schema Editor Tests</h1>
+    <div id="test-results">Running tests...</div>
+
+    <!-- Include the main application structure for the script to interact with -->
+    <div id="app-container">
+        <div id="edit-preview-buttons">
+            <button id="top-edit-btn">Edit</button>
+            <button id="preview-btn">Preview</button>
+        </div>
+        <main id="main-content" class="top-section">
+            <section id="editor">
+                <h2>JSON Schema Editor <span id="apply-feedback"></span></h2>
+                <button type="button" id="toggle-schema-options">Schema Options</button>
+                <div id="schema-options">
+                    <div><label for="schema-version">$schema:</label><input type="text" id="schema-version"></div>
+                    <div><label for="schema-id">$id:</label><input type="text" id="schema-id"></div>
+                    <div><label for="paste-schema">Schema:</label><textarea id="paste-schema"></textarea></div>
+                    <div><button id="apply-pasted-schema">Apply Pasted Schema</button></div>
+                    <div id="paste-feedback"></div><hr>
+                </div>
+                <div id="current-operation"></div>
+                <form id="schema-form">
+                    <div><label for="title">Key:</label><input type="text" id="title" required></div>
+                    <div><label for="description">Description:</label><input type="text" id="description"></div>
+                    <div><label for="type">Type:</label><select id="type"><option value="" disabled selected>Select</option><option value="string">String</option><option value="number">Number</option><option value="boolean">Boolean</option><option value="object">Object</option><option value="array">Array</option></select></div>
+                    <div id="item-type-fields"><label for="item-type">Item Type:</label><select id="item-type"><option value="" disabled selected>Select</option><option value="string">String</option><option value="number">Number</option><option value="boolean">Boolean</option><option value="object">Object</option></select></div>
+                    <div id="default-fields"><label for="default">Default:</label><input type="text" id="default"></div>
+                    <div class="pattern-wrapper" id="pattern-fields"><label for="pattern">Pattern:</label><input type="text" id="pattern"></div>
+                    <div id="pattern-properties-fields"><div><label for="patternProperties">Pattern:</label><input type="text" id="patternProperties"></div></div>
+                    <div id="enum-fields"><label for="enum">Enum:</label><input type="text" id="enum"></div>
+                    <div><label for="required">Required:</label><input type="checkbox" id="required"></div>
+                    <div id="number-fields"><div><label for="minimum">Minimum:</label><input type="number" id="minimum" step="any"></div><div><label for="maximum">Maximum:</label><input type="number" id="maximum" step="any"></div></div>
+                    <div id="exclusive-number-fields"><div><label for="exclusiveMinimum">Excl. Min:</label><input type="number" id="exclusiveMinimum" step="any"></div><div><label for="exclusiveMaximum">Excl. Max:</label><input type="number" id="exclusiveMaximum" step="any"></div></div>
+                    <div id="string-fields"><div><label for="minLength">Min Length:</label><input type="number" id="minLength" step="1"></div><div><label for="maxLength">Max Length:</label><input type="number" id="maxLength" step="1"></div></div>
+                    <div id="array-fields"><div><label for="minItems">Min Items:</label><input type="number" id="minItems" step="1"></div><div><label for="maxItems">Max Items:</label><input type="number" id="maxItems" step="1"></div></div>
+                    <div id="object-fields"><div><label for="minProperties">Min Prop.:</label><input type="number" id="minProperties" step="1"></div><div><label for="maxProperties">Max Prop.:</label><input type="number" id="maxProperties" step="1"></div></div>
+                    <div id="button-container"><button type="button" id="add-btn">Add</button><button type="button" id="edit-btn">Edit</button><button type="button" id="delete-btn">Delete</button></div>
+                    <div id="validation-feedback"></div>
+                </form>
+            </section>
+            <section id="tree-view"><h2>Schema Structure</h2><div id="schema-tree"></div></section>
+        </main>
+        <section id="preview"><h2>Schema Preview <span id="copy-feedback"></span></h2><button id="format-btn">Format JSON</button><button id="copy-btn">Copy JSON</button><button id="save-btn">Save</button><div id="json-preview-container"><div id="json-preview"></div></div></section>
+    </div>
+
+    <!-- Load the main script as a module -->
+    <script type="module" src="../src/index.js"></script>
+    <!-- Load the test script -->
+    <script type="module" src="./test.js"></script>
+</body>
+</html>
