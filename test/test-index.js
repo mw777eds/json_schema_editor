@@ -233,6 +233,11 @@ function updateSchema(newNode, isAddOperation, isRequired) {
         };
     }
     
+    // Debug log
+    console.log("Before update - Schema:", JSON.stringify(window.schema));
+    console.log("Adding/editing node:", newKey, "with value:", JSON.stringify(newNode));
+    console.log("isAddOperation:", isAddOperation, "isRequired:", isRequired);
+    
     let parentNode = window.schema;
     
     if (!isAddOperation && state.parentNode) {
@@ -266,10 +271,15 @@ function updateSchema(newNode, isAddOperation, isRequired) {
         }
     }
     
+    console.log("Parent node for update:", JSON.stringify(parentNode));
+    
     const oldKey = isAddOperation ? null : state.selectedNode?.key;
     
     if (parentNode.type === 'object') {
-        if (!parentNode.properties) parentNode.properties = {};
+        if (!parentNode.properties) {
+            parentNode.properties = {};
+            console.log("Created properties object for parent node");
+        }
         
         if (!isAddOperation && oldKey && parentNode.properties[oldKey]) {
             // Preserve existing children for edit operations
@@ -289,6 +299,7 @@ function updateSchema(newNode, isAddOperation, isRequired) {
             // Remove old key if it changed
             if (oldKey !== newKey) {
                 delete parentNode.properties[oldKey];
+                console.log(`Deleted old key "${oldKey}" from parent node`);
             }
         }
         
@@ -297,30 +308,41 @@ function updateSchema(newNode, isAddOperation, isRequired) {
         
         // Debug log to help diagnose issues
         console.log(`Added/updated property "${newKey}" to schema:`, JSON.stringify(parentNode.properties[newKey]));
+        console.log("Parent node properties after update:", Object.keys(parentNode.properties));
         
         // Update required array
-        if (!parentNode.required) parentNode.required = [];
+        if (!parentNode.required) {
+            parentNode.required = [];
+            console.log("Created required array for parent node");
+        }
         
         // Remove old key from required if it exists
         if (oldKey) {
             const oldKeyIndex = parentNode.required.indexOf(oldKey);
             if (oldKeyIndex > -1) {
                 parentNode.required.splice(oldKeyIndex, 1);
+                console.log(`Removed "${oldKey}" from required array`);
             }
         }
         
         // Add new key to required if needed
         if (isRequired && !parentNode.required.includes(newKey)) {
             parentNode.required.push(newKey);
+            console.log(`Added "${newKey}" to required array`);
         }
         
         // Clean up empty required array
         if (parentNode.required.length === 0) {
             delete parentNode.required;
+            console.log("Deleted empty required array");
         }
     } else if (parentNode.type === 'array' && newKey === 'items') {
         parentNode.items = newNode;
+        console.log("Updated array items:", JSON.stringify(parentNode.items));
     }
+    
+    // Debug log the final schema state
+    console.log("After update - Schema:", JSON.stringify(window.schema));
 }
 
 function resetForm() {

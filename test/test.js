@@ -40,6 +40,28 @@ function assert(condition, message) {
         console.error(`Assertion Failed: ${message}`);
     }
     resultsElement.appendChild(div);
+    
+    // Capture test result for saving
+    if (typeof window.captureTestResult === 'function') {
+        // Get the current test name from the call stack
+        const stackLines = new Error().stack.split('\n');
+        let testName = 'unknown';
+        for (const line of stackLines) {
+            if (line.includes('test') && !line.includes('assert') && !line.includes('captureTestResult')) {
+                const match = line.match(/at (\w+)/);
+                if (match && match[1]) {
+                    testName = match[1];
+                    break;
+                }
+            }
+        }
+        window.captureTestResult(condition, message, testName);
+    }
+    
+    // Debug output for failing tests
+    if (!condition) {
+        console.log('Current schema state:', JSON.stringify(window.schema, null, 2));
+    }
 }
 
 function reportResults() {

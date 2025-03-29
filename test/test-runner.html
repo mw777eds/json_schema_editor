@@ -40,6 +40,37 @@
     button:hover {
       background-color: #006690;
     }
+    .download-link {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 5px 10px;
+      background-color: #f0f0f0;
+      color: #333;
+      text-decoration: none;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    .download-link:hover {
+      background-color: #e0e0e0;
+    }
+    #debug-panel {
+      margin-top: 20px;
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    #debug-panel h3 {
+      margin-top: 0;
+    }
+    #schema-debug {
+      white-space: pre-wrap;
+      font-family: monospace;
+      background-color: #f5f5f5;
+      padding: 10px;
+      border-radius: 4px;
+      max-height: 300px;
+      overflow: auto;
+    }
   </style>
 </head>
 <body>
@@ -53,11 +84,36 @@
     <button id="run-nested-tests">Run Nested Tests</button>
   </div>
   <div id="test-results">Loading test runner...</div>
+  
+  <div id="debug-panel">
+    <h3>Current Schema State</h3>
+    <div id="schema-debug">No schema data yet</div>
+    <button id="refresh-debug">Refresh Schema Debug</button>
+  </div>
 
   <!-- Import the test-specific version of the app code -->
   <script type="module" src="./test-index.js"></script>
   
   <!-- Import the test runner -->
   <script type="module" src="./test-runner.js"></script>
+  
+  <script>
+    // Add debug panel functionality
+    document.getElementById('refresh-debug').addEventListener('click', function() {
+      const schemaDebug = document.getElementById('schema-debug');
+      if (window.schema) {
+        schemaDebug.textContent = JSON.stringify(window.schema, null, 2);
+      } else {
+        schemaDebug.textContent = 'Schema not available';
+      }
+    });
+    
+    // Auto-refresh schema debug every 2 seconds
+    setInterval(function() {
+      if (window.schema) {
+        document.getElementById('schema-debug').textContent = JSON.stringify(window.schema, null, 2);
+      }
+    }, 2000);
+  </script>
 </body>
 </html>
