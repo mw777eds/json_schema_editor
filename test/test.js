@@ -121,7 +121,7 @@ function resetTestState() {
     window.state = {
         currentNode: window.schema,
         selectedNode: null,
-        parentNode: null,
+        parentNode: null, // Set to null to test direct root property addition
         currentOperation: 'add',
         isFormatted: true,
         currentView: 'edit'

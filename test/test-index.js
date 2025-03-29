@@ -13,7 +13,7 @@ let schema = {
 let state = {
     currentNode: schema,
     selectedNode: null,
-    parentNode: schema, // Set parent to schema by default
+    parentNode: null, // Set to null initially to test direct root property addition
     currentOperation: 'add',
     isFormatted: true,
     currentView: 'edit'
@@ -238,6 +238,32 @@ function updateSchema(newNode, isAddOperation, isRequired) {
     console.log("Adding/editing node:", newKey, "with value:", JSON.stringify(newNode));
     console.log("isAddOperation:", isAddOperation, "isRequired:", isRequired);
     
+    // For simple property additions at the root level, handle directly
+    if (pathParts.length === 0 && isAddOperation) {
+        // Ensure schema has properties
+        if (!window.schema.properties) {
+            window.schema.properties = {};
+        }
+        
+        // Add the property directly to the root schema
+        window.schema.properties[newKey] = newNode;
+        
+        // Handle required flag
+        if (isRequired) {
+            if (!window.schema.required) {
+                window.schema.required = [];
+            }
+            if (!window.schema.required.includes(newKey)) {
+                window.schema.required.push(newKey);
+            }
+        }
+        
+        console.log(`Added property "${newKey}" directly to root schema:`, JSON.stringify(window.schema.properties[newKey]));
+        console.log("After direct update - Schema:", JSON.stringify(window.schema));
+        return;
+    }
+    
+    // For more complex cases, traverse the path
     let parentNode = window.schema;
     
     if (!isAddOperation && state.parentNode) {
@@ -379,7 +405,7 @@ function resetForm() {
     
     // Reset state
     state.selectedNode = null;
-    state.parentNode = schema;
+    state.parentNode = null; // Set to null to test direct root property addition
     state.currentNode = schema;
     
     document.getElementById('current-operation').textContent = '';
