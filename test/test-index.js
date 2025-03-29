@@ -80,7 +80,7 @@ function selectNode(key, value, parent) {
     if (value.type === 'boolean') {
         document.getElementById('default').value = (typeof value.default !== 'undefined') ? value.default.toString() : '';
     } else {
-        document.getElementById('default').value = value.default || '';
+        document.getElementById('default').value = value.default !== undefined && value.default !== null ? String(value.default) : '';
     }
     
     document.getElementById('required').checked = parent && parent.required && parent.required.includes(key);
@@ -172,6 +172,8 @@ function createNodeObject(nodeKey, type) {
     const enumValues = document.getElementById('enum').value;
     const defaultValue = document.getElementById('default').value;
     const pattern = document.getElementById('pattern').value;
+    
+    console.log("TEST-INDEX DEBUG: Creating node with default value:", defaultValue, "type:", typeof defaultValue);
     
     let newNode = { type };
     

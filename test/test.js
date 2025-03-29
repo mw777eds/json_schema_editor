@@ -82,13 +82,16 @@ function reportResults() {
 
 // Helper function to set form values
 function setFormValues(values) {
+    console.log("TEST DEBUG: Setting form values:", JSON.stringify(values));
     for (const id in values) {
         const element = document.getElementById(id);
         if (element) {
             if (element.type === 'checkbox') {
                 element.checked = values[id];
+                console.log(`TEST DEBUG: Set checkbox ${id} to ${values[id]}`);
             } else {
                 element.value = values[id];
+                console.log(`TEST DEBUG: Set field ${id} to ${values[id]} (${typeof values[id]})`);
             }
             // Trigger change event for select elements to update field visibility
             if (element.tagName === 'SELECT') {
@@ -226,7 +229,9 @@ function testNumberNodeCreationAndEdit() {
         default: '50',
         required: false
     });
+    console.log("TEST DEBUG: Before addOrEditNode - default field value:", document.getElementById('default').value);
     window.addOrEditNode(true);
+    console.log("TEST DEBUG: After addOrEditNode - schema node:", JSON.stringify(window.schema.properties.testNumber));
 
     let addedNode = window.schema.properties.testNumber;
     assert(addedNode && addedNode.type === 'number', 'Number node "testNumber" should be added');
@@ -246,6 +251,9 @@ function testNumberNodeCreationAndEdit() {
     console.log("exclusiveMinimum field:", document.getElementById('exclusiveMinimum').value, "type:", typeof document.getElementById('exclusiveMinimum').value);
     console.log("exclusiveMaximum field:", document.getElementById('exclusiveMaximum').value, "type:", typeof document.getElementById('exclusiveMaximum').value);
     console.log("default field:", document.getElementById('default').value, "type:", typeof document.getElementById('default').value);
+    console.log("default field raw:", document.getElementById('default').value);
+    console.log("default field === '50':", document.getElementById('default').value === '50');
+    console.log("default field == 50:", document.getElementById('default').value == 50);
     
     assert(document.getElementById('minimum').value === '0', `Form minimum should be populated, got ${document.getElementById('minimum').value}`);
     assert(document.getElementById('maximum').value === '100', `Form maximum should be populated, got ${document.getElementById('maximum').value}`);
