@@ -191,6 +191,15 @@ body {
 #schema-form textarea {
     resize: vertical;
     min-height: 80px;
+    border: 1px solid #666;
+}
+
+#schema-form div:has(textarea) {
+    align-items: flex-start;
+}
+
+#schema-form div:has(textarea) label {
+    margin-top: 8px;
 }
 
 .pattern-wrapper {
