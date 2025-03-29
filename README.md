@@ -45,7 +45,7 @@ This tool provides a user-friendly interface for FileMaker developers to create 
 ### Installation
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/json-schema-editor.git
+git clone https://github.com/mw777eds/json-schema-editor.git
 cd json-schema-editor
 
 # Install dependencies
@@ -57,7 +57,7 @@ npm install
 # Start the development server
 npm start
 
-# This will launch the application at http://localhost:3000
+# This will launch the application at http://localhost:1234
 ```
 
 ### Testing
@@ -76,6 +76,27 @@ You can also run individual test suites from the test runner interface:
 - Array node tests
 - Object node tests
 - Nested node tests
+
+### FileMaker Integration
+
+To integrate with FileMaker:
+
+1. Edit the `widget.config.js` file to specify your FileMaker configuration:
+   ```javascript
+   module.exports = {
+     widgetName: "json_schema_editor",
+     server: "$", // Your FileMaker server address
+     file: "Empowered_Agents", // Your FileMaker file name
+     uploadScript: "UploadToHTML" // The script to run in FileMaker
+   };
+   ```
+
+2. Deploy the built files to FileMaker:
+   ```bash
+   npm run deploy-to-fm
+   ```
+
+   This command builds the project and uploads it to your FileMaker solution using the script specified in widget.config.js.
 
 ### Building for Production
 ```bash
