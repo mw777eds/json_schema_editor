@@ -1,14 +1,25 @@
 // Basic Test Runner
 let testsRun = 0;
 let testsPassed = 0;
-const resultsElement = document.getElementById('test-results');
-resultsElement.innerHTML = ''; // Clear initial message
+
+// Make test functions available globally for the test runner
+window.testsRun = testsRun;
+window.testsPassed = testsPassed;
+window.testStringNodeCreationAndEdit = testStringNodeCreationAndEdit;
+window.testNumberNodeCreationAndEdit = testNumberNodeCreationAndEdit;
+window.testArrayNodeCreationAndEdit = testArrayNodeCreationAndEdit;
+window.testObjectNodeCreationAndEdit = testObjectNodeCreationAndEdit;
+window.testNestedNodeCreation = testNestedNodeCreation;
+window.reportResults = reportResults;
 
 function assert(condition, message) {
     testsRun++;
+    window.testsRun = testsRun;
+    const resultsElement = document.getElementById('test-results');
     const div = document.createElement('div');
     if (condition) {
         testsPassed++;
+        window.testsPassed = testsPassed;
         div.textContent = `PASS: ${message}`;
         div.className = 'test-pass';
     } else {
@@ -20,6 +31,7 @@ function assert(condition, message) {
 }
 
 function reportResults() {
+    const resultsElement = document.getElementById('test-results');
     const summary = document.createElement('h3');
     summary.textContent = `Tests completed: ${testsPassed} / ${testsRun} passed.`;
     resultsElement.appendChild(summary);

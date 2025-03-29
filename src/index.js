@@ -6,6 +6,9 @@ let schema = {
     "$schema": "https://json-schema.org/draft/2020-12/schema"
 };
 
+// Expose schema and functions for testing
+window.schema = schema;
+
 /* 
  * Event listener for the "Apply Pasted Schema" button.
  */
@@ -435,6 +438,10 @@ function updateSchema(newNode, isAddOperation, isRequired) {
  * Initializes event listeners and sets up the form.
  */
 document.addEventListener('DOMContentLoaded', () => {
+    // Expose functions for testing
+    window.selectNode = selectNode;
+    window.addOrEditNode = addOrEditNode;
+    window.state = state;
     const typeSelect = document.getElementById('type');
     const numberFields = document.getElementById('number-fields');
     const exclusiveNumberFields = document.getElementById('exclusive-number-fields');
@@ -551,6 +558,9 @@ function resetForm() {
     state.currentNode = schema;
     document.getElementById('current-operation').textContent = '';
 }
+
+// Expose functions for testing
+window.resetForm = resetForm;
 
 /* 
  * Validates the schema.
