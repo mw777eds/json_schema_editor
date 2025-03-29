@@ -177,6 +177,13 @@ function testStringNodeCreationAndEdit() {
     assert(document.getElementById('title').value === 'testString', 'Form title should be populated');
     assert(document.getElementById('description').value === 'A test string', 'Form description should be populated');
     assert(document.getElementById('type').value === 'string', 'Form type should be populated');
+    // Debug log for form field values in test assertion
+    console.log("TEST ASSERTION DEBUG: Form field values during assertion:");
+    console.log("minLength field:", document.getElementById('minLength').value, "type:", typeof document.getElementById('minLength').value);
+    console.log("maxLength field:", document.getElementById('maxLength').value, "type:", typeof document.getElementById('maxLength').value);
+    console.log("pattern field:", document.getElementById('pattern').value, "type:", typeof document.getElementById('pattern').value);
+    console.log("default field:", document.getElementById('default').value, "type:", typeof document.getElementById('default').value);
+    
     assert(document.getElementById('minLength').value === '5', `Form minLength should be populated, got ${document.getElementById('minLength').value}`);
     assert(document.getElementById('maxLength').value === '10', `Form maxLength should be populated, got ${document.getElementById('maxLength').value}`);
     assert(document.getElementById('pattern').value === '^[a-z]+$', `Form pattern should be populated, got ${document.getElementById('pattern').value}`);
@@ -232,6 +239,14 @@ function testNumberNodeCreationAndEdit() {
 
     // 2. Select Number Node
     window.selectNode('testNumber', addedNode, window.schema);
+    // Debug log for form field values in test assertion
+    console.log("TEST ASSERTION DEBUG: Number field values during assertion:");
+    console.log("minimum field:", document.getElementById('minimum').value, "type:", typeof document.getElementById('minimum').value);
+    console.log("maximum field:", document.getElementById('maximum').value, "type:", typeof document.getElementById('maximum').value);
+    console.log("exclusiveMinimum field:", document.getElementById('exclusiveMinimum').value, "type:", typeof document.getElementById('exclusiveMinimum').value);
+    console.log("exclusiveMaximum field:", document.getElementById('exclusiveMaximum').value, "type:", typeof document.getElementById('exclusiveMaximum').value);
+    console.log("default field:", document.getElementById('default').value, "type:", typeof document.getElementById('default').value);
+    
     assert(document.getElementById('minimum').value === '0', `Form minimum should be populated, got ${document.getElementById('minimum').value}`);
     assert(document.getElementById('maximum').value === '100', `Form maximum should be populated, got ${document.getElementById('maximum').value}`);
     assert(document.getElementById('exclusiveMinimum').value === '10', `Form exclusiveMinimum should be populated, got ${document.getElementById('exclusiveMinimum').value}`);

@@ -85,18 +85,46 @@ function selectNode(key, value, parent) {
     
     document.getElementById('required').checked = parent && parent.required && parent.required.includes(key);
     
-    // Populate type-specific fields
-    document.getElementById('minimum').value = value.minimum ?? '';
-    document.getElementById('maximum').value = value.maximum ?? '';
-    document.getElementById('exclusiveMinimum').value = value.exclusiveMinimum ?? '';
-    document.getElementById('exclusiveMaximum').value = value.exclusiveMaximum ?? '';
-    document.getElementById('minLength').value = value.minLength ?? '';
-    document.getElementById('maxLength').value = value.maxLength ?? '';
+    // Debug log for numeric fields
+    console.log("TEST-INDEX DEBUG: Node values before setting form fields:");
+    console.log("minimum:", value.minimum, "type:", typeof value.minimum);
+    console.log("maximum:", value.maximum, "type:", typeof value.maximum);
+    console.log("exclusiveMinimum:", value.exclusiveMinimum, "type:", typeof value.exclusiveMinimum);
+    console.log("exclusiveMaximum:", value.exclusiveMaximum, "type:", typeof value.exclusiveMaximum);
+    console.log("minLength:", value.minLength, "type:", typeof value.minLength);
+    console.log("maxLength:", value.maxLength, "type:", typeof value.maxLength);
+    console.log("minItems:", value.minItems, "type:", typeof value.minItems);
+    console.log("maxItems:", value.maxItems, "type:", typeof value.maxItems);
+    console.log("minProperties:", value.minProperties, "type:", typeof value.minProperties);
+    console.log("maxProperties:", value.maxProperties, "type:", typeof value.maxProperties);
+    
+    // Populate type-specific fields - Convert all values to strings
+    document.getElementById('minimum').value = value.minimum !== undefined && value.minimum !== null ? String(value.minimum) : '';
+    document.getElementById('maximum').value = value.maximum !== undefined && value.maximum !== null ? String(value.maximum) : '';
+    document.getElementById('exclusiveMinimum').value = value.exclusiveMinimum !== undefined && value.exclusiveMinimum !== null ? String(value.exclusiveMinimum) : '';
+    document.getElementById('exclusiveMaximum').value = value.exclusiveMaximum !== undefined && value.exclusiveMaximum !== null ? String(value.exclusiveMaximum) : '';
+    document.getElementById('minLength').value = value.minLength !== undefined && value.minLength !== null ? String(value.minLength) : '';
+    document.getElementById('maxLength').value = value.maxLength !== undefined && value.maxLength !== null ? String(value.maxLength) : '';
     document.getElementById('pattern').value = value.pattern || '';
-    document.getElementById('minItems').value = value.minItems ?? '';
-    document.getElementById('maxItems').value = value.maxItems ?? '';
-    document.getElementById('minProperties').value = value.minProperties ?? '';
-    document.getElementById('maxProperties').value = value.maxProperties ?? '';
+    document.getElementById('minItems').value = value.minItems !== undefined && value.minItems !== null ? String(value.minItems) : '';
+    document.getElementById('maxItems').value = value.maxItems !== undefined && value.maxItems !== null ? String(value.maxItems) : '';
+    document.getElementById('minProperties').value = value.minProperties !== undefined && value.minProperties !== null ? String(value.minProperties) : '';
+    document.getElementById('maxProperties').value = value.maxProperties !== undefined && value.maxProperties !== null ? String(value.maxProperties) : '';
+    
+    // Debug log for form field values after setting
+    setTimeout(() => {
+        console.log("TEST-INDEX DEBUG: Form field values after setting:");
+        console.log("minimum field:", document.getElementById('minimum').value, "type:", typeof document.getElementById('minimum').value);
+        console.log("maximum field:", document.getElementById('maximum').value, "type:", typeof document.getElementById('maximum').value);
+        console.log("exclusiveMinimum field:", document.getElementById('exclusiveMinimum').value, "type:", typeof document.getElementById('exclusiveMinimum').value);
+        console.log("exclusiveMaximum field:", document.getElementById('exclusiveMaximum').value, "type:", typeof document.getElementById('exclusiveMaximum').value);
+        console.log("minLength field:", document.getElementById('minLength').value, "type:", typeof document.getElementById('minLength').value);
+        console.log("maxLength field:", document.getElementById('maxLength').value, "type:", typeof document.getElementById('maxLength').value);
+        console.log("minItems field:", document.getElementById('minItems').value, "type:", typeof document.getElementById('minItems').value);
+        console.log("maxItems field:", document.getElementById('maxItems').value, "type:", typeof document.getElementById('maxItems').value);
+        console.log("minProperties field:", document.getElementById('minProperties').value, "type:", typeof document.getElementById('minProperties').value);
+        console.log("maxProperties field:", document.getElementById('maxProperties').value, "type:", typeof document.getElementById('maxProperties').value);
+    }, 0);
     
     // Show/hide type-specific fields
     const selectedType = value.type || typeof value;
