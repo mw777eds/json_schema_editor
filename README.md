@@ -66,7 +66,8 @@ The project includes comprehensive tests to ensure functionality works correctly
 ```bash
 # Run the automated tests in the browser
 npm test
-
+# In a new terminal then run 
+npm run open-test-browser
 # This will open test-runner.html in your default browser
 ```
 
@@ -78,6 +79,7 @@ You can also run individual test suites from the test runner interface:
 - Nested node tests
 
 ### FileMaker Integration
+Thanks to jsinfm.com - Jeremy Brown for all of his work to make this easy!
 
 To integrate with FileMaker:
 
@@ -118,6 +120,7 @@ Supports all major JSON Schema features including:
 The editor integrates directly with FileMaker through the web viewer interface and can save schemas directly to your FileMaker solution for use in LLM tool call configurations.
 
 ## Project Structure
+- `index.html` - Main html file
 - `src/` - Source code for the editor
   - `index.js` - Main application logic
   - `style.css` - Styling for the editor
