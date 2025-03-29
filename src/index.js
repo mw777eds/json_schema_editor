@@ -104,33 +104,48 @@ function selectNode(key, value, parent) {
     state.selectedNode = { key, value, parent };
     state.parentNode = parent ? parent : state.currentNode;
     state.currentNode = value;
+    
+    // Populate basic fields
     document.getElementById('title').value = key;
     document.getElementById('description').value = value.description || '';
     document.getElementById('type').value = value.type || typeof value;
     document.getElementById('enum').value = value.enum ? value.enum.join(',') : '';
+    
+    // Handle boolean default values specially
     if (value.type === 'boolean') {
         document.getElementById('default').value = (typeof value.default !== 'undefined') ? value.default.toString() : '';
     } else {
-        document.getElementById('default').value = value.default || '';
+        document.getElementById('default').value = value.default !== undefined && value.default !== null ? value.default : '';
     }
+    
+    // Handle pattern properties
     document.getElementById('patternProperties').value = value.patternProperties ?
         Object.entries(value.patternProperties)
             .map(([pattern, prop]) => `${pattern}:${prop.type}`)
             .join(',') : '';
+    
+    // Set required checkbox
     document.getElementById('required').checked = parent && parent.required && parent.required.includes(key);
 
-    // Populate type-specific fields
-    document.getElementById('minimum').value = value.minimum ?? '';
-    document.getElementById('maximum').value = value.maximum ?? '';
-    document.getElementById('exclusiveMinimum').value = value.exclusiveMinimum ?? '';
-    document.getElementById('exclusiveMaximum').value = value.exclusiveMaximum ?? '';
-    document.getElementById('minLength').value = value.minLength ?? '';
-    document.getElementById('maxLength').value = value.maxLength ?? '';
+    // Populate type-specific fields - ensure we convert undefined/null to empty string
+    // Number fields
+    document.getElementById('minimum').value = value.minimum !== undefined && value.minimum !== null ? value.minimum : '';
+    document.getElementById('maximum').value = value.maximum !== undefined && value.maximum !== null ? value.maximum : '';
+    document.getElementById('exclusiveMinimum').value = value.exclusiveMinimum !== undefined && value.exclusiveMinimum !== null ? value.exclusiveMinimum : '';
+    document.getElementById('exclusiveMaximum').value = value.exclusiveMaximum !== undefined && value.exclusiveMaximum !== null ? value.exclusiveMaximum : '';
+    
+    // String fields
+    document.getElementById('minLength').value = value.minLength !== undefined && value.minLength !== null ? value.minLength : '';
+    document.getElementById('maxLength').value = value.maxLength !== undefined && value.maxLength !== null ? value.maxLength : '';
     document.getElementById('pattern').value = value.pattern || '';
-    document.getElementById('minItems').value = value.minItems ?? '';
-    document.getElementById('maxItems').value = value.maxItems ?? '';
-    document.getElementById('minProperties').value = value.minProperties ?? '';
-    document.getElementById('maxProperties').value = value.maxProperties ?? '';
+    
+    // Array fields
+    document.getElementById('minItems').value = value.minItems !== undefined && value.minItems !== null ? value.minItems : '';
+    document.getElementById('maxItems').value = value.maxItems !== undefined && value.maxItems !== null ? value.maxItems : '';
+    
+    // Object fields
+    document.getElementById('minProperties').value = value.minProperties !== undefined && value.minProperties !== null ? value.minProperties : '';
+    document.getElementById('maxProperties').value = value.maxProperties !== undefined && value.maxProperties !== null ? value.maxProperties : '';
 
 
     // Show or hide the add button based on the selected node type
